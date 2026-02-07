@@ -196,10 +196,19 @@ Guidelines:
       }
     }
 
-    userInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") sendMessage();
-    });
+   userInput.addEventListener("keydown", function (e) {
+  // Ctrl + Enter = SEND
+  if (e.key === "Enter" && e.ctrlKey) {
+    e.preventDefault();
+    sendMessage();
+  }
 
+  // Enter alone = NEW LINE (default textarea behavior)
+});
+    userInput.addEventListener("input", function () {
+  this.style.height = "auto";
+  this.style.height = this.scrollHeight + "px";
+});
     // Initial greeting
     addMessage(
       "Hello 💛 I’m sakhi. You can talk to me about safety concerns, anxiety, stress, or anything you’re feeling. You’re not alone.",
@@ -209,6 +218,7 @@ Guidelines:
 
 </body>
 </html>
+
 
 
 
