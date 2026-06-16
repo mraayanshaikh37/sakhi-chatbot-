@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sakhi - your companion</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: system-ui, Arial, sans-serif;
+    background: #0f172a;
+    color: #e5e7eb;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+  }
+
+  .chat-container {
+    width: 95%;
+    max-width: 420px;
+    height: 90vh;
+    background: #020617;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+    overflow: hidden;
+  }
+
+  .chat-header {
+    padding: 14px;
+    text-align: center;
+    font-weight: 600;
+    background: #020617;
+    border-bottom: 1px solid #1e293b;
+    font-size: 15px;
+    letter-spacing: 0.3px;
+  }
+
+  /* subtle shake hint text */
+  .shake-hint {
+    font-size: 10px;
+    color: #334155;
+    text-align: center;
+    padding: 3px 0;
+    background: #020617;
+    letter-spacing: 0.2px;
+  }
+
+  .messages {
+    flex: 1;
+    padding: 14px;
+    overflow-y: auto;
+  }
+
+  .message {
+    max-width: 82%;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    font-size: 14px;
+  }
+
+  .user {
+    background: #2563eb;
+    margin-left: auto;
+  }
+
+  .bot {
+    background: #1e293b;
+    margin-right: auto;
+  }
+
+  .input-area {
+    display: flex;
+    align-items: flex-end;
+    border-top: 1px solid #1e293b;
+    padding: 6px;
+    gap: 6px;
+  }
+
+  textarea {
+    flex: 1;
+    padding: 10px 12px;
+    border: none;
+    outline: none;
+    background: #0f172a;
+    color: #e5e7eb;
+    font-size: 14px;
+    font-family: inherit;
+    resize: none;
+    border-radius: 20px;
+    min-height: 40px;
+    max-height: 120px;
+    overflow-y: auto;
+    line-height: 1.4;
+  }
+
+  .send-btn {
+    padding: 10px 16px;
+    border: none;
+    background: #22c55e;
+    color: #020617;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 20px;
+    font-size: 14px;
+    flex-shrink: 0;
+    height: 40px;
+    align-self: flex-end;
+  }
+
+  .send-btn:active { background: #16a34a; }
+
+  /* SOS overlay — hidden by default */
+  #sosOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 999;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 24px;
+  }
+
+  #sosOverlay.active { display: flex; }
+
+  #sosOverlay h2 {
+    color: #ef4444;
+    font-size: 22px;
+    text-align: center;
+  }
+
+  #sosOverlay p {
+    color: #e5e7eb;
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.6;
+  }
+
+  .sos-input {
+    width: 100%;
+    max-width: 340px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #374151;
+    background: #0f172a;
+    color: white;
+    font-size: 14px;
+    outline: none;
+  }
+
+  .sos-btn-row {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    max-width: 340px;
+  }
+
+  .sos-confirm {
+    flex: 1;
+    padding: 12px;
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+  }
+
+  .sos-cancel {
+    flex: 1;
+    padding: 12px;
+    background: #374151;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+  }
+
+  .sos-status {
+    color: #86efac;
+    font-size: 13px;
+    text-align: center;
+    min-height: 20px;
+  }
+
+  @media (max-width: 600px) {
+    .chat-container {
+      width: 100%;
+      height: 100vh;
+      max-width: none;
+      border-radius: 0;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="chat-container">
+  <div class="chat-header">sakhi – your companion 💛</div>
+  <div class="shake-hint">shake phone 3× for emergency sos</div>
+  <div class="messages" id="messages"></div>
+  <div class="input-area">
+    <textarea id="userInput" rows="1" placeholder="Share what you're feeling or facing…"></textarea>
+    <button class="send-btn" onclick="sendMessage()">Send</button>
+  </div>
+</div>
+
+<!-- SOS OVERLAY -->
+<div id="sosOverlay">
+  <h2>🚨 Emergency SOS</h2>
+  <p>Your location will be shared with your trusted contact via WhatsApp message.</p>
+  <input class="sos-input" id="sosNumber" type="tel" placeholder="Trusted contact number (with country code)" />
+  <input class="sos-input" id="sosMessage" value="I need help. This is my live location:" />
+  <div class="sos-btn-row">
+    <button class="sos-confirm" onclick="triggerSOS()">Send SOS</button>
+    <button class="sos-cancel" onclick="closeSOS()">Cancel</button>
+  </div>
+  <p class="sos-status" id="sosStatus"></p>
+</div>
+
+<script>
+/* ── API ── */
+const API_URL = "https://api.mistral.ai/v1/chat/completions";
+const API_KEY = "QBAOi3QEWO5MmQm619QawrcAH9Zq7UkI";
+
+const messagesDiv = document.getElementById("messages");
+const userInput   = document.getElementById("userInput");
+
+/* ── CONVERSATION ── */
+const conversation = [{
+  role: "system",
+  content: `You are "sakhi", a supportive, calm, and trustworthy AI companion
+designed to help Indian women with safety guidance, emotional support,
+and mental well-being.
+
+Guidelines:
+- Be empathetic, respectful, and non-judgmental
+- Prioritize women's safety in Indian cultural and social contexts
+- Offer grounding techniques and emotional validation when distress is expressed
+- Do NOT provide medical or legal diagnosis
+- Encourage reaching out to trusted people or local emergency services when appropriate
+- Use clear, simple language
+- Never shame, blame, or pressure the user
+- Keep the answers short
+- Only elaborate if needed`
+}];
+
+/* ── ADD MESSAGE ── */
+function addMessage(text, type) {
+  const msg = document.createElement("div");
+  msg.className = "message " + type;
+  msg.textContent = text;
+  messagesDiv.appendChild(msg);
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+/* ── SEND ── */
+async function sendMessage() {
+  const text = userInput.value.trim();
+  if (!text) return;
+
+  addMessage(text, "user");
+
+  // ✅ THE FIX — reset height after clearing value
+  userInput.value = "";
+  userInput.style.height = "40px";
+
+  conversation.push({ role: "user", content: text });
+
+  const thinking = document.createElement("div");
+  thinking.className = "message bot";
+  thinking.textContent = "just a moment....";
+  messagesDiv.appendChild(thinking);
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + API_KEY,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "mistral-large-latest",
+        messages: conversation
+      })
+    });
+
+    const data = await response.json();
+    thinking.remove();
+
+    const reply = data.choices?.[0]?.message?.content
+      || "I'm here, but I couldn't form a response. Please try again.";
+
+    addMessage(reply, "bot");
+    conversation.push({ role: "assistant", content: reply });
+
+  } catch (error) {
+    thinking.remove();
+    addMessage("Something went wrong. Please check your connection.", "bot");
+  }
+}
+
+/* ── TEXTAREA AUTO RESIZE (WITH SHRINK FIX) ── */
+userInput.addEventListener("input", function () {
+  this.style.height = "40px";        // reset first
+  this.style.height = Math.min(this.scrollHeight, 120) + "px";  // then grow
+});
+
+/* ── ENTER TO SEND ── */
+userInput.addEventListener("keydown", function (e) {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+/* ── GREETING ── */
+addMessage(
+  "Hello 💛 I'm sakhi. You can talk to me about safety concerns, anxiety, stress, or anything you're feeling. You're not alone.",
+  "bot"
+);
+
+/* ════════════════════════════
+   SHAKE TO SOS
+════════════════════════════ */
+let shakeCount = 0;
+let shakeTimer = null;
+let lastShake  = 0;
+
+window.addEventListener("devicemotion", function(e) {
+  const acc = e.accelerationIncludingGravity;
+  if (!acc) return;
+
+  const total = Math.abs(acc.x) + Math.abs(acc.y) + Math.abs(acc.z);
+  const now   = Date.now();
+
+  if (total > 25 && now - lastShake > 400) {
+    lastShake = now;
+    shakeCount++;
+
+    // reset counter after 2 seconds of no shake
+    clearTimeout(shakeTimer);
+    shakeTimer = setTimeout(() => { shakeCount = 0; }, 2000);
+
+    if (shakeCount >= 3) {
+      shakeCount = 0;
+      openSOS();
+    }
+  }
+});
+
+/* ── SOS OVERLAY ── */
+function openSOS() {
+  document.getElementById("sosOverlay").classList.add("active");
+  document.getElementById("sosStatus").textContent = "";
+}
+
+function closeSOS() {
+  document.getElementById("sosOverlay").classList.remove("active");
+}
+
+function triggerSOS() {
+  const number  = document.getElementById("sosNumber").value.trim();
+  const message = document.getElementById("sosMessage").value.trim();
+  const status  = document.getElementById("sosStatus");
+
+  if (!number) {
+    status.style.color = "#f87171";
+    status.textContent = "Please enter a contact number.";
+    return;
+  }
+
+  status.style.color = "#86efac";
+  status.textContent = "Getting your location...";
+
+  if (!navigator.geolocation) {
+    sendWhatsApp(number, message + " (location unavailable)");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const lat  = pos.coords.latitude.toFixed(5);
+      const lng  = pos.coords.longitude.toFixed(5);
+      const maps = `https://maps.google.com/?q=${lat},${lng}`;
+      status.textContent = "Sending...";
+      sendWhatsApp(number, `${message} ${maps}`);
+    },
+    () => {
+      sendWhatsApp(number, message + " (could not get location)");
+    },
+    { timeout: 6000 }
+  );
+}
+
+function sendWhatsApp(number, message) {
+  const clean = number.replace(/\D/g, "");
+  const url   = `https://wa.me/${clean}?text=${encodeURIComponent(message)}`;
+  document.getElementById("sosStatus").textContent = "Opening WhatsApp...";
+  setTimeout(() => {
+    window.open(url, "_blank");
+    closeSOS();
+  }, 800);
+}
+</script>
+
+</body>
+</html>
