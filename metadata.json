@@ -1,0 +1,11 @@
+{
+  "name": "Sakhi",
+  "description": "An AI-powered safety and emotional support companion designed for women's safety guidance and emergency SOS.",
+  "requestFramePermissions": [
+    "geolocation",
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
