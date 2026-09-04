@@ -1,0 +1,4184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Sakhi – Women's Safety & Emotional Companion</title>
+  
+  <!-- Leaflet CSS for Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg-primary: #090d16;
+    --bg-secondary: #111827;
+    --bg-card: #172033;
+    --bg-card-hover: #1e293b;
+    --accent-gold: #f59e0b;
+    --accent-gold-soft: #fef3c7;
+    --accent-rose: #f43f5e;
+    --accent-emerald: #10b981;
+    --accent-blue: #3b82f6;
+    --accent-purple: #8b5cf6;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --border-color: #1e293b;
+    --border-highlight: #334155;
+    --sos-red: #ef4444;
+    --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: var(--font-body);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  /* Main App Container */
+  .app-container {
+    width: 100%;
+    max-width: 480px;
+    height: 100vh;
+    background: var(--bg-secondary);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+    overflow: hidden;
+  }
+
+  @media (min-width: 500px) {
+    .app-container {
+      height: 94vh;
+      max-height: 880px;
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+    }
+  }
+
+  /* Header */
+  .app-header {
+    padding: 10px 16px;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 20;
+    flex-shrink: 0;
+  }
+
+  .brand-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+
+  .brand-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #f59e0b, #ec4899);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 19px;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+  }
+
+  .brand-text h1 {
+    font-family: var(--font-heading);
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .brand-text .status-badge {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 20px;
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    font-weight: 600;
+  }
+
+  .brand-text p {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sos-header-btn {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    border: none;
+    padding: 7px 13px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    box-shadow: 0 0 14px rgba(239, 68, 68, 0.45);
+    animation: pulse-glow 2s infinite;
+  }
+
+  .sos-header-btn:active { transform: scale(0.95); }
+
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
+    50% { box-shadow: 0 0 20px rgba(239, 68, 68, 0.8); }
+  }
+
+  .stealth-btn {
+    background: var(--bg-card);
+    border: 1px solid var(--border-highlight);
+    color: var(--text-secondary);
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    cursor: pointer;
+  }
+
+  /* Quick Action Bar */
+  .safety-bar {
+    background: #0d1322;
+    border-bottom: 1px solid var(--border-color);
+    padding: 8px 12px;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex-shrink: 0;
+  }
+  .safety-bar::-webkit-scrollbar { display: none; }
+
+  .quick-chip {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .quick-chip:hover, .quick-chip.active {
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+    border-color: #f59e0b;
+  }
+
+  .shake-banner {
+    background: rgba(239, 68, 68, 0.1);
+    border-bottom: 1px solid rgba(239, 68, 68, 0.2);
+    padding: 4px 12px;
+    font-size: 11px;
+    color: #fca5a5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  .shake-settings-link {
+    color: #f87171;
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  /* Main Dynamic Body */
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .view-panel {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    background: var(--bg-secondary);
+  }
+
+  .view-panel.active {
+    display: flex;
+  }
+
+  /* Chat View Layout */
+  #chatView {
+    display: none;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+  }
+  #chatView.active {
+    display: flex;
+  }
+
+  .messages-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+  }
+
+  .message {
+    max-width: 88%;
+    padding: 11px 14px;
+    border-radius: 14px;
+    line-height: 1.55;
+    font-size: 13.5px;
+    word-break: break-word;
+  }
+
+  .message.user {
+    background: #2563eb;
+    color: #ffffff;
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
+    white-space: pre-wrap;
+  }
+
+  .message.bot {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: #e2e8f0;
+    margin-right: auto;
+    border-bottom-left-radius: 4px;
+  }
+
+  .message.bot strong {
+    color: #f8fafc;
+    font-weight: 600;
+  }
+
+  .chat-bullet {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin: 4px 0;
+  }
+
+  .bullet-dot {
+    color: #f59e0b;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+
+  .bullet-num {
+    color: #f59e0b;
+    font-weight: 600;
+    min-width: 18px;
+    flex-shrink: 0;
+  }
+
+  .chat-gap {
+    height: 8px;
+  }
+
+  .typing-pulse {
+    display: inline-block;
+    letter-spacing: 4px;
+    color: #f59e0b;
+    font-size: 11px;
+    animation: typing-fade 1.2s infinite ease-in-out;
+  }
+
+  @keyframes typing-fade {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+
+  .message.system-alert {
+    max-width: 95%;
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    color: #fca5a5;
+    font-size: 12px;
+    margin: 4px auto;
+    text-align: center;
+    border-radius: 10px;
+  }
+
+  .suggested-prompts {
+    padding: 6px 12px;
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    background: var(--bg-primary);
+    border-top: 1px solid var(--border-color);
+    flex-shrink: 0;
+  }
+  .suggested-prompts::-webkit-scrollbar { display: none; }
+
+  .prompt-pill {
+    flex-shrink: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--border-highlight);
+    color: var(--text-secondary);
+    font-size: 11.5px;
+    padding: 5px 10px;
+    border-radius: 14px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+
+  .prompt-pill:hover {
+    color: #fff;
+    background: #1e293b;
+    border-color: #3b82f6;
+  }
+
+  /* Chat Input Row */
+  .chat-input-row {
+    display: flex;
+    align-items: center;
+    background: #0d1322;
+    border-top: 1px solid var(--border-color);
+    padding: 8px 12px;
+    gap: 8px;
+    flex-shrink: 0;
+    z-index: 10;
+  }
+
+  .chat-input-box {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: var(--bg-card);
+    border: 1px solid var(--border-highlight);
+    border-radius: 24px;
+    padding: 2px 10px 2px 14px;
+    transition: border-color 0.2s;
+  }
+
+  .chat-input-box:focus-within {
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+  }
+
+  .chat-input-box textarea {
+    flex: 1;
+    padding: 9px 0;
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 14px;
+    font-family: inherit;
+    resize: none;
+    min-height: 38px;
+    max-height: 100px;
+    outline: none;
+    line-height: 1.4;
+  }
+
+  .chat-input-box textarea::placeholder {
+    color: #64748b;
+  }
+
+  .chat-voice-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .chat-voice-btn:hover { color: #f59e0b; }
+
+  .chat-voice-btn.recording {
+    color: #ef4444;
+    animation: voice-pulse 1s infinite;
+  }
+
+  @keyframes voice-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.25); }
+  }
+
+  .chat-send-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #000;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: 700;
+    flex-shrink: 0;
+    transition: transform 0.15s;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+  }
+
+  .chat-send-btn:active { transform: scale(0.92); }
+
+  /* Map View */
+  .map-container-box {
+    width: 100%;
+    height: 230px;
+    position: relative;
+    border-bottom: 1px solid var(--border-color);
+    background: #020617;
+    flex-shrink: 0;
+  }
+
+  #safeHavensMap { width: 100%; height: 100%; }
+
+  .map-overlay-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 999;
+    background: rgba(15, 23, 42, 0.9);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border-highlight);
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #f8fafc;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .map-recenter-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 999;
+    background: #1e293b;
+    color: #f8fafc;
+    border: 1px solid var(--border-highlight);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .places-filter-bar {
+    display: flex;
+    padding: 8px 12px;
+    gap: 8px;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-color);
+    overflow-x: auto;
+    scrollbar-width: none;
+    flex-shrink: 0;
+  }
+  .places-filter-bar::-webkit-scrollbar { display: none; }
+
+  .filter-pill {
+    padding: 5px 11px;
+    border-radius: 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .filter-pill.active {
+    background: #3b82f6;
+    color: white;
+    border-color: #60a5fa;
+  }
+
+  .places-list {
+    flex: 1;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+  }
+
+  .place-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .place-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .place-type-badge {
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 10px;
+  }
+
+  .badge-police { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+  .badge-hospital { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+  .badge-pharmacy { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+  /* Ride Guard Styles */
+  .ride-guard-active-box {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(59, 130, 246, 0.12));
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+  .ride-guard-active-box.warning {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(245, 158, 11, 0.15));
+    border-color: rgba(239, 68, 68, 0.5);
+    animation: pulse-border 1.5s infinite;
+  }
+  @keyframes pulse-border {
+    0%, 100% { border-color: rgba(239, 68, 68, 0.4); }
+    50% { border-color: rgba(239, 68, 68, 1); }
+  }
+
+  .ride-timer-display {
+    font-family: var(--font-heading);
+    font-size: 38px;
+    font-weight: 800;
+    color: #34d399;
+    letter-spacing: 1px;
+    margin: 8px 0;
+  }
+  .ride-timer-display.warning { color: #f87171; }
+
+  /* Evidence Blackbox Audio Styles */
+  .blackbox-recording-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    padding: 10px 14px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+  }
+  .record-indicator-dot {
+    width: 12px;
+    height: 12px;
+    background: #ef4444;
+    border-radius: 50%;
+    animation: record-blink 1s infinite;
+  }
+  @keyframes record-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .evidence-item-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* CPR Metronome & First Aid */
+  .cpr-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+  .cpr-pulse-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: #ef4444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-heading);
+    font-size: 24px;
+    font-weight: 800;
+    color: white;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+    transition: transform 0.08s ease;
+    cursor: pointer;
+  }
+  .cpr-pulse-circle.beat {
+    transform: scale(1.18);
+    background: #f87171;
+    box-shadow: 0 0 35px rgba(239, 68, 68, 0.9);
+  }
+
+  .first-aid-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+  .first-aid-card h4 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #f8fafc;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .first-aid-card ol, .first-aid-card ul {
+    padding-left: 18px;
+    font-size: 13px;
+    color: #cbd5e1;
+    line-height: 1.55;
+  }
+  .first-aid-card li { margin-bottom: 4px; }
+
+  /* Legal FIR Document Box */
+  .fir-preview-box {
+    background: #0f172a;
+    border: 1px solid var(--border-highlight);
+    border-radius: 12px;
+    padding: 14px;
+    font-family: monospace;
+    font-size: 12px;
+    color: #e2e8f0;
+    white-space: pre-wrap;
+    max-height: 320px;
+    overflow-y: auto;
+    line-height: 1.5;
+    margin-top: 12px;
+  }
+
+  .place-distance {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent-gold);
+  }
+
+  .place-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .place-address {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .place-btn-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .btn-call-station {
+    flex: 1;
+    background: #22c55e;
+    color: #020617;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-decoration: none;
+  }
+
+  .btn-navigate {
+    flex: 1;
+    background: #1e293b;
+    color: #f8fafc;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid var(--border-highlight);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-decoration: none;
+  }
+
+  /* Settings & Contacts */
+  .section-title {
+    font-family: var(--font-heading);
+    font-size: 15px;
+    font-weight: 700;
+    color: #f8fafc;
+    margin-bottom: 4px;
+  }
+
+  .section-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    line-height: 1.4;
+  }
+
+  .settings-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 14px;
+    margin: 10px 12px;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 10px 12px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+  }
+
+  .contact-info strong {
+    font-size: 13.5px;
+    color: #fff;
+    display: block;
+  }
+
+  .contact-info span {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-family: monospace;
+  }
+
+  .contact-actions {
+    display: flex;
+    gap: 6px;
+  }
+
+  .contact-del-btn {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+    text-decoration: none;
+  }
+
+  .add-contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+    background: var(--bg-secondary);
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px dashed var(--border-highlight);
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 9px 12px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-highlight);
+    border-radius: 8px;
+    color: #fff;
+    font-size: 13px;
+    outline: none;
+  }
+
+  .form-input:focus { border-color: var(--accent-blue); }
+
+  .btn-primary {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 9px 14px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .btn-test-sms {
+    background: #10b981;
+    color: #020617;
+    border: none;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    margin-top: 10px;
+    width: 100%;
+  }
+
+  /* Grounding & Helplines */
+  .helpline-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .helpline-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 10px;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .helpline-card:hover {
+    border-color: #f59e0b;
+    background: #1e293b;
+  }
+
+  .helpline-num {
+    font-family: var(--font-heading);
+    font-size: 18px;
+    font-weight: 800;
+    color: #fbbf24;
+  }
+
+  .helpline-title {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #f8fafc;
+  }
+
+  .helpline-desc {
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+
+  .grounding-box {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(59, 130, 246, 0.12));
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: 14px;
+    padding: 14px;
+    margin: 10px 12px;
+    text-align: center;
+  }
+
+  .grounding-step-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: #8b5cf6;
+    color: white;
+    font-size: 10.5px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .grounding-step-title {
+    font-family: var(--font-heading);
+    font-size: 17px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+
+  .grounding-step-desc {
+    font-size: 12.5px;
+    color: #cbd5e1;
+    line-height: 1.4;
+    margin-bottom: 10px;
+  }
+
+  .breathing-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 0;
+  }
+
+  .breathing-ring-outer {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    border: 2px dashed rgba(245, 158, 11, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .breathing-circle-inner {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f59e0b, #ec4899);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 11px;
+    transition: transform 4s ease-in-out;
+  }
+
+  .breathing-circle-inner.expand {
+    transform: scale(1.7);
+  }
+
+  .breathing-status-text {
+    margin-top: 12px;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #fbbf24;
+  }
+
+  .siren-btn {
+    width: 100%;
+    padding: 13px;
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-family: var(--font-heading);
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  /* Bottom Nav */
+  .bottom-nav {
+    height: 58px;
+    background: var(--bg-primary);
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-shrink: 0;
+    z-index: 20;
+  }
+
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 4px 10px;
+  }
+
+  .nav-item .nav-icon { font-size: 17px; }
+  .nav-item.active { color: var(--accent-gold); }
+
+  /* SOS Overlay */
+  #sosCountdownOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.96);
+    backdrop-filter: blur(12px);
+    z-index: 10000;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    text-align: center;
+  }
+  #sosCountdownOverlay.active { display: flex; }
+
+  .sos-countdown-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: #dc2626;
+    border: 4px solid #ef4444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-heading);
+    font-size: 44px;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 16px;
+    animation: countdown-pulse 1s infinite;
+  }
+
+  @keyframes countdown-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+
+  .sos-cancel-btn {
+    background: #334155;
+    color: #fff;
+    border: 1px solid #475569;
+    padding: 10px 24px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .sos-dispatch-now-btn {
+    background: #ef4444;
+    color: #fff;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  /* Fake Call Screen */
+  #fakeCallOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #000000;
+    z-index: 10001;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 50px 24px 40px;
+    text-align: center;
+  }
+  #fakeCallOverlay.active { display: flex; }
+
+  .caller-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #374151;
+    margin: 0 auto 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+  }
+
+  .caller-name {
+    font-family: var(--font-heading);
+    font-size: 26px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .fake-call-actions {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  .call-btn {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    border: none;
+    cursor: pointer;
+    color: white;
+  }
+
+  .call-btn-decline { background: #ef4444; }
+  .call-btn-accept { background: #22c55e; }
+
+  /* Stealth Mode */
+  #stealthOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #18181b;
+    z-index: 10002;
+    flex-direction: column;
+    padding: 20px 16px;
+    justify-content: flex-end;
+  }
+  #stealthOverlay.active { display: flex; }
+
+  .calc-display {
+    text-align: right;
+    font-size: 40px;
+    font-family: monospace;
+    color: #f4f4f5;
+    padding: 16px 10px;
+  }
+
+  .calc-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+
+  .calc-btn {
+    height: 56px;
+    border-radius: 28px;
+    border: none;
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    background: #27272a;
+    cursor: pointer;
+  }
+
+  .calc-btn.op { background: #f59e0b; color: #000; font-weight: 700; }
+  .calc-btn.fn { background: #3f3f46; }
+
+  /* Strobe Light & Flashing Siren Overlay */
+  #strobeOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  #strobeOverlay.active {
+    display: flex;
+    animation: strobe-flash 0.12s infinite;
+  }
+  @keyframes strobe-flash {
+    0%, 49% { background: #ff0000; }
+    50%, 100% { background: #ffffff; }
+  }
+
+  .strobe-stop-btn {
+    background: #000000;
+    color: #ffffff;
+    border: 3px solid #ffffff;
+    padding: 16px 36px;
+    border-radius: 40px;
+    font-family: var(--font-heading);
+    font-size: 18px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 0 25px rgba(0,0,0,0.8);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: none !important;
+  }
+
+  /* Interactive AI Fake Call Voice Wave & Controls */
+  .call-voice-wave {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin: 16px 0;
+    height: 30px;
+  }
+  .call-wave-bar {
+    width: 4px;
+    height: 8px;
+    background: #22c55e;
+    border-radius: 2px;
+    animation: wave-bar 0.8s infinite ease-in-out;
+  }
+  .call-wave-bar:nth-child(2) { animation-delay: 0.15s; }
+  .call-wave-bar:nth-child(3) { animation-delay: 0.3s; }
+  .call-wave-bar:nth-child(4) { animation-delay: 0.45s; }
+  .call-wave-bar:nth-child(5) { animation-delay: 0.6s; }
+  @keyframes wave-bar {
+    0%, 100% { height: 6px; }
+    50% { height: 26px; }
+  }
+
+  .fake-call-config-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 10005;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .fake-call-config-modal.active { display: flex; }
+  .fake-call-config-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 22px;
+    width: 100%;
+    max-width: 360px;
+  }
+</style>
+</head>
+<body>
+
+<div class="app-container">
+  
+  <!-- Header -->
+  <header class="app-header">
+    <div class="brand-group" onclick="switchView('chat')">
+      <div class="brand-logo">💛</div>
+      <div class="brand-text">
+        <h1>Sakhi <span class="status-badge">Live Safety</span></h1>
+        <p>Your Guardian & Companion</p>
+      </div>
+    </div>
+    
+    <div class="header-actions">
+      <button class="sos-header-btn" onclick="startSOSCountdown('Header Trigger')">
+        🚨 SOS
+      </button>
+      <button class="stealth-btn" title="Stealth Mode" onclick="toggleStealth(true)">
+        🎭
+      </button>
+    </div>
+  </header>
+
+  <!-- Shake Trigger Banner -->
+  <div class="shake-banner">
+    <span>📳 <strong>Shake Phone 3×</strong> to trigger offline SIM SMS</span>
+    <span class="shake-settings-link" onclick="switchView('contacts')">Settings</span>
+  </div>
+
+  <!-- Safety Quick Bar -->
+  <div class="safety-bar">
+    <button class="quick-chip active" id="chip-chat" onclick="switchView('chat')">
+      💬 Sakhi AI
+    </button>
+    <button class="quick-chip" id="chip-rideguard" onclick="switchView('rideguard')">
+      🛡️ Ride Guard
+    </button>
+    <button class="quick-chip" id="chip-map" onclick="switchView('map')">
+      🗺️ Safe Havens
+    </button>
+    <button class="quick-chip" id="chip-legal" onclick="switchView('legal')">
+      ⚖️ Zero FIR
+    </button>
+    <button class="quick-chip" id="chip-firstaid" onclick="switchView('firstaid')">
+      🩹 First Aid & CPR
+    </button>
+    <button class="quick-chip" id="chip-fakecall" onclick="openFakeCallConfig()">
+      📞 Fake Call
+    </button>
+    <button class="quick-chip" id="chip-contacts" onclick="switchView('contacts')">
+      🎙️ Evidence & Contacts
+    </button>
+    <button class="quick-chip" id="chip-grounding" onclick="switchView('grounding')">
+      🧘 Grounding & Siren
+    </button>
+  </div>
+
+  <!-- Main Body Content -->
+  <main class="main-content">
+    
+    <!-- 1. SAKHI AI CHAT VIEW -->
+    <section class="view-panel active" id="chatView">
+      <div class="messages-container" id="messagesContainer"></div>
+      
+      <!-- Quick Safety Prompts -->
+      <div class="suggested-prompts">
+        <button class="prompt-pill" onclick="sendQuickPrompt('I feel unsafe walking alone right now, guide me.')">
+          🚶‍♀️ Walking alone
+        </button>
+        <button class="prompt-pill" onclick="sendQuickPrompt('What are safety precautions for late night cab / auto rides in India?')">
+          🚕 Night Cab Tips
+        </button>
+        <button class="prompt-pill" onclick="sendQuickPrompt('I am having sudden panic and anxiety. Help me calm down.')">
+          🫁 Panic Relief
+        </button>
+        <button class="prompt-pill" onclick="sendQuickPrompt('What are my legal rights under Zero FIR in India?')">
+          ⚖️ Zero FIR Rights
+        </button>
+      </div>
+
+      <!-- Chat Free-Text Input Row -->
+      <div class="chat-input-row">
+        <div class="chat-input-box">
+          <textarea id="chatInput" rows="1" placeholder="Type any message, question, or safety concern..."></textarea>
+          <button class="chat-voice-btn" id="voiceBtn" onclick="toggleVoiceInput()" title="Speak via Mic">
+            🎤
+          </button>
+        </div>
+        <button class="chat-send-btn" id="sendBtn" onclick="sendChatMessage()" title="Send Message">➔</button>
+      </div>
+    </section>
+
+    <!-- 2. RIDE GUARD & "WALK WITH ME" JOURNEY TRACKER -->
+    <section class="view-panel" id="rideguardView">
+      <div class="settings-card">
+        <div class="section-title">🛡️ "Walk With Me" Ride Guard</div>
+        <p class="section-desc">
+          Live journey escort. Sakhi monitors your travel time, prompts regular safety check-ins, and detects prolonged vehicle stoppage or route deviation.
+        </p>
+
+        <div id="rideGuardInactiveState">
+          <label style="font-size: 11.5px; font-weight: 600; color: #cbd5e1; display: block; margin-bottom: 4px;">Choose Transit Mode:</label>
+          <div style="display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto;">
+            <button class="filter-pill active" id="rideModeCab" onclick="setRideMode('cab', this)">🚕 Cab / Auto</button>
+            <button class="filter-pill" id="rideModeWalk" onclick="setRideMode('walk', this)">🚶‍♀️ Night Walk</button>
+            <button class="filter-pill" id="rideModeBus" onclick="setRideMode('bus', this)">🚌 Bus / Metro</button>
+          </div>
+
+          <label style="font-size: 11.5px; font-weight: 600; color: #cbd5e1; display: block; margin-bottom: 4px;">Estimated Trip Duration:</label>
+          <div style="display: flex; gap: 6px; margin-bottom: 14px;">
+            <button class="filter-pill active" id="dur15" onclick="setRideDuration(15, this)">15 Min</button>
+            <button class="filter-pill" id="dur30" onclick="setRideDuration(30, this)">30 Min</button>
+            <button class="filter-pill" id="dur45" onclick="setRideDuration(45, this)">45 Min</button>
+            <button class="filter-pill" id="dur60" onclick="setRideDuration(60, this)">60 Min</button>
+          </div>
+
+          <button class="btn-primary" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="startRideGuard()">
+            🛡️ Start "Walk With Me" Guard
+          </button>
+        </div>
+
+        <div id="rideGuardActiveState" style="display: none;">
+          <div class="ride-guard-active-box" id="rideGuardActiveCard">
+            <div style="font-size: 12px; font-weight: 700; color: #34d399; text-transform: uppercase;" id="rideActiveModeTitle">🚕 Cab Journey Active</div>
+            <div class="ride-timer-display" id="rideTimerCountdown">15:00</div>
+            <div style="font-size: 12px; color: #cbd5e1; margin-bottom: 10px;" id="rideGuardStatusText">Next check-in in 5 mins • GPS Heartbeat Active</div>
+
+            <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+              <button class="filter-pill active" style="background: #10b981; color: #fff;" onclick="confirmRideCheckin()">
+                ✅ I Am Safe (Check-in)
+              </button>
+              <button class="filter-pill" style="background: #3b82f6; color: #fff;" onclick="shareLiveRideGPS()">
+                📍 Share Live Trip SMS
+              </button>
+              <button class="filter-pill" style="background: #334155; color: #fff;" onclick="finishRideGuard(true)">
+                🏠 Arrived Safely (End)
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cab & Auto Verification Inspector Checklist -->
+      <div class="settings-card">
+        <div class="section-title">🚕 Cab & Auto Verification Checklist</div>
+        <p class="section-desc">Essential pre-boarding safety checks to verify before stepping into any vehicle.</p>
+        
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+          <label style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: #e2e8f0; cursor: pointer;">
+            <input type="checkbox" id="chkPlate" style="width: 16px; height: 16px; accent-color: #f59e0b;" />
+            <span><strong>Number Plate Match:</strong> Physical plate matches Uber/Ola app</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: #e2e8f0; cursor: pointer;">
+            <input type="checkbox" id="chkChildLock" style="width: 16px; height: 16px; accent-color: #f59e0b;" />
+            <span><strong>Child-Lock Check:</strong> Test opening rear door handle from inside</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: #e2e8f0; cursor: pointer;">
+            <input type="checkbox" id="chkShare" style="width: 16px; height: 16px; accent-color: #f59e0b;" />
+            <span><strong>Trip Sharing:</strong> Shared live tracking with family/friend</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: #e2e8f0; cursor: pointer;">
+            <input type="checkbox" id="chkDriver" style="width: 16px; height: 16px; accent-color: #f59e0b;" />
+            <span><strong>Driver Match:</strong> Face matches driver profile photo</span>
+          </label>
+        </div>
+
+        <div style="margin-top: 14px;">
+          <input type="text" id="cabPlateInput" class="form-input" placeholder="Vehicle Plate (e.g. DL 01 AB 1234)" style="margin-bottom: 8px;" />
+          <button class="filter-pill active" style="width: 100%;" onclick="logVehiclePlate()">
+            📋 Log & Save Vehicle Plate to Evidence
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. SAFE HAVENS & POLICE STATIONS MAP VIEW -->
+    <section class="view-panel" id="mapView">
+      <div class="map-container-box">
+        <div id="safeHavensMap"></div>
+        <div class="map-overlay-badge">
+          <span id="locStatusDot">🟢</span> <span id="locStatusText">Locating nearest safe havens...</span>
+        </div>
+        <button class="map-recenter-btn" onclick="fetchSafeHavens(true)">
+          🎯 Refresh Location
+        </button>
+      </div>
+
+      <div class="places-filter-bar">
+        <button class="filter-pill active" onclick="filterPlaces('all', this)">All (<span id="countAll">0</span>)</button>
+        <button class="filter-pill" onclick="filterPlaces('police', this)">🚔 Police (<span id="countPolice">0</span>)</button>
+        <button class="filter-pill" onclick="filterPlaces('hospital', this)">🏥 Hospitals (<span id="countHospital">0</span>)</button>
+        <button class="filter-pill" onclick="filterPlaces('pharmacy', this)">💊 Pharmacies (<span id="countPharmacy">0</span>)</button>
+      </div>
+
+      <div class="places-list" id="placesList">
+        <div style="text-align: center; padding: 30px; color: var(--text-muted);">
+          Fetching nearby police stations and 24/7 medical centers...
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. ZERO FIR & LEGAL INCIDENT DRAFTER -->
+    <section class="view-panel" id="legalView">
+      <div class="settings-card">
+        <div class="section-title">⚖️ Instant Zero FIR & Incident Drafter</div>
+        <p class="section-desc">
+          Generate an official, legally structured Zero FIR complaint citing Indian statutes (BNS & CrPC) ready to submit at any police station or official email.
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+          <div>
+            <label style="font-size: 11.5px; font-weight: 600; color: #cbd5e1; display: block; margin-bottom: 4px;">Incident Type:</label>
+            <select id="firIncidentType" class="form-input">
+              <option value="Stalking & Following (BNS Sec 78)">🚶 Stalking & Unsolicited Following (BNS Sec 78)</option>
+              <option value="Outraging Modesty / Eve Teasing (BNS Sec 75)">⚠️ Sexual Harassment / Eve Teasing (BNS Sec 75)</option>
+              <option value="Cab Driver Threat / Misbehavior">🚕 Cab/Auto Misbehavior & Route Deviation</option>
+              <option value="Cyber Stalking & Online Abuse (IT Act Sec 66E/67)">💻 Cyber Harassment, Doxxing & Threats</option>
+              <option value="Physical Assault / Attempt">🚨 Physical Assault or Attempt to Harm</option>
+              <option value="Domestic Harassment / Cruelty (BNS Sec 85)">🏠 Domestic Distress & Harassment</option>
+            </select>
+          </div>
+
+          <div style="display: flex; gap: 8px;">
+            <div style="flex: 1;">
+              <label style="font-size: 11.5px; font-weight: 600; color: #cbd5e1; display: block; margin-bottom: 4px;">Complainant Name:</label>
+              <input type="text" id="firVictimName" class="form-input" placeholder="Your Name / Anonymous" />
+            </div>
+            <div style="flex: 1;">
+              <label style="font-size: 11.5px; font-weight: 600; color: #cbd5e1; display: block; margin-bottom: 4px;">Contact Phone:</label>
+              <input type="tel" id="firVictimPhone" class="form-input" placeholder="Phone Number" />
+            </div>
+          </div>
+
+          <div>
+            <label style="font-size: 11.5px; font-weight: 600; color: #cbd5e1; display: block; margin-bottom: 4px;">Perpetrator / Vehicle Details:</label>
+            <input type="text" id="firSuspectDesc" class="form-input" placeholder="Physical description, vehicle plate, clothes, approximate age..." />
+          </div>
+
+          <div>
+            <label style="font-size: 11.5px; font-weight: 600; color: #cbd5e1; display: block; margin-bottom: 4px;">Incident Narrative / Statement:</label>
+            <textarea id="firStatement" class="form-input" rows="3" style="resize: none;" placeholder="Describe what occurred, exact location landmarks, and sequence of events..."></textarea>
+          </div>
+
+          <button class="btn-primary" onclick="generateZeroFIR()">
+            📄 Generate Formal Zero FIR Complaint
+          </button>
+        </div>
+
+        <div id="firResultContainer" style="display: none; margin-top: 14px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <strong style="font-size: 13px; color: #34d399;">✅ Legal Zero FIR Ready</strong>
+            <div style="display: flex; gap: 6px;">
+              <button class="filter-pill active" onclick="copyFIRText()">📋 Copy</button>
+              <button class="filter-pill" onclick="downloadFIRText()">💾 Download</button>
+              <button class="filter-pill" style="background:#3b82f6; color:#fff;" onclick="emailFIRNCW()">✉️ Email NCW</button>
+            </div>
+          </div>
+          <div class="fir-preview-box" id="firPreviewBox"></div>
+        </div>
+      </div>
+
+      <!-- Essential Legal Rights for Women -->
+      <div class="settings-card">
+        <div class="section-title">⚖️ Your Statutory Legal Rights in India</div>
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+          <div class="first-aid-card">
+            <h4>📜 Right to Zero FIR</h4>
+            <p style="font-size: 12.5px; color: #cbd5e1; line-height: 1.5;">
+              A Zero FIR can be registered at <strong>ANY police station</strong> in India, regardless of where the incident occurred. Police cannot refuse registration citing territorial jurisdiction.
+            </p>
+          </div>
+          <div class="first-aid-card">
+            <h4>🌙 No Arrest After Sunset</h4>
+            <p style="font-size: 12.5px; color: #cbd5e1; line-height: 1.5;">
+              Under Section 46(4) CrPC, a woman cannot be arrested between sunset and sunrise except under exceptional circumstances with prior written permission from a Judicial Magistrate.
+            </p>
+          </div>
+          <div class="first-aid-card">
+            <h4>👮‍♀️ Female Police Officer Presence</h4>
+            <p style="font-size: 12.5px; color: #cbd5e1; line-height: 1.5;">
+              Recording of statements or examination of a female victim/witness must be conducted by or in the presence of a woman police officer.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. INTERACTIVE FIRST-AID, CPR METRONOME & CRISIS DISASTER HUB -->
+    <section class="view-panel" id="firstaidView">
+      <div class="settings-card">
+        <div class="section-title">🫀 Interactive CPR Metronome (110 BPM)</div>
+        <p class="section-desc">
+          Pace life-saving chest compressions at 100–120 beats per minute. Hard & fast in the center of the chest.
+        </p>
+
+        <div class="cpr-box">
+          <div class="cpr-pulse-circle" id="cprCircle" onclick="toggleCPRMetronome()">
+            <span id="cprBtnText">START<br>CPR</span>
+          </div>
+          <div style="font-size: 14px; font-weight: 700; color: #f87171; margin-top: 12px;" id="cprCounterText">
+            Compressions: 0 / 30
+          </div>
+          <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">
+            Push 2 inches deep • 30 Compressions : 2 Rescue Breaths
+          </div>
+        </div>
+      </div>
+
+      <!-- Medical Trauma Guides -->
+      <div class="settings-card">
+        <div class="section-title">🩹 Emergency Medical First-Aid Guides</div>
+        
+        <div class="first-aid-card">
+          <h4>🩸 Severe Bleeding & Hemorrhage</h4>
+          <ol>
+            <li>Apply firm, direct pressure on the wound using a clean cloth or bandage.</li>
+            <li>Do NOT remove initial soaked cloth; add more layers on top.</li>
+            <li>Elevate the injured limb above heart level if no fracture is suspected.</li>
+            <li>If arterial spurting persists on limb, apply a tourniquet 2 inches above the wound.</li>
+          </ol>
+        </div>
+
+        <div class="first-aid-card">
+          <h4>🗣️ Choking (Heimlich Maneuver)</h4>
+          <ol>
+            <li>Stand behind person, wrap arms around waist.</li>
+            <li>Make a fist just above the navel; grasp with other hand.</li>
+            <li>Deliver quick, upward and inward abdominal thrusts until airway clears.</li>
+          </ol>
+        </div>
+
+        <div class="first-aid-card">
+          <h4>🔥 Burns & Thermal Scalds</h4>
+          <ol>
+            <li>Cool burn under gentle cool running tap water for <strong>15–20 minutes</strong>.</li>
+            <li>Do NOT use ice, butter, or toothpaste on burns.</li>
+            <li>Cover loosely with sterile, non-stick cling wrap or dressing.</li>
+          </ol>
+        </div>
+
+        <div class="first-aid-card">
+          <h4>😵 Fainting & Heat Exhaustion</h4>
+          <ol>
+            <li>Lay person flat on back; elevate legs 12 inches (30 cm).</li>
+            <li>Loosen tight collars and clothing; fan with cool fresh air.</li>
+            <li>Turn to side (Recovery Position) if vomiting or breathing irregularly.</li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- Crisis & Disaster Quick Response Hub -->
+      <div class="settings-card">
+        <div class="section-title">🚨 Disaster & Crisis Action Hub</div>
+        
+        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+          <button class="filter-pill active" onclick="toggleDistressWhistle()" id="whistleBtn" style="background:#ef4444; color:#fff;">
+            🔊 High-Pitch Distress Whistle
+          </button>
+          <a href="tel:108" class="filter-pill" style="background:#22c55e; color:#fff; text-decoration:none; display:flex; align-items:center;">
+            🚑 Call 108 Ambulance
+          </a>
+        </div>
+
+        <div class="first-aid-card">
+          <h4>🔥 Building Fire & Smoke Inhalation</h4>
+          <ul>
+            <li><strong>Stay Low:</strong> Crawl beneath smoke where breathable oxygen is highest.</li>
+            <li><strong>Feel Doors:</strong> Touch doorknobs with back of hand before opening; if hot, do not open.</li>
+            <li><strong>If Clothes Catch Fire:</strong> STOP, DROP, and ROLL to extinguish flames.</li>
+          </ul>
+        </div>
+
+        <div class="first-aid-card">
+          <h4>🌍 Earthquake Protocol</h4>
+          <ul>
+            <li><strong>DROP, COVER, HOLD ON:</strong> Drop to knees under a sturdy desk/table.</li>
+            <li>Stay away from glass windows, exterior walls, and falling light fixtures.</li>
+            <li>Do NOT use elevators during or immediately after tremors.</li>
+          </ul>
+        </div>
+
+        <div class="first-aid-card">
+          <h4>🏃‍♂️ Crowd Surge & Stampede Defense</h4>
+          <ul>
+            <li>Adopt a <strong>Boxer Stance</strong> with arms bent in front of chest to protect lungs/ribcage.</li>
+            <li>Never fight against the crowd flow; move diagonally towards the edges or perimeter.</li>
+            <li>If knocked down, curl into a tight fetal ball covering head and neck.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. TRUSTED CONTACTS & EVIDENCE BLACKBOX VAULT VIEW -->
+    <section class="view-panel" id="contactsView">
+      
+      <!-- Emergency Evidence Blackbox Recorder -->
+      <div class="settings-card" style="border-color: rgba(239, 68, 68, 0.35);">
+        <div class="section-title" style="color: #f87171;">🎙️ Emergency Evidence Blackbox</div>
+        <p class="section-desc">
+          Securely record environmental audio, capture real-time GPS telemetry, device battery, and network state for police or legal evidence.
+        </p>
+
+        <div class="blackbox-recording-banner" id="blackboxLiveBanner" style="display: none;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div class="record-indicator-dot"></div>
+            <strong style="font-size: 13px; color: #f87171;">RECORDING AUDIO BLACKBOX (<span id="blackboxTimer">00:00</span>)</strong>
+          </div>
+          <button class="filter-pill active" style="background: #ef4444; color: #fff;" onclick="stopBlackboxRecording()">
+            🛑 Stop & Save
+          </button>
+        </div>
+
+        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+          <button class="btn-primary" id="startRecBtn" style="background: linear-gradient(135deg, #ef4444, #b91c1c);" onclick="startBlackboxRecording()">
+            🎙️ Record 30s Audio Snapshot
+          </button>
+          <button class="filter-pill" onclick="captureTelemetrySnapshot()">
+            📸 Log GPS Snapshot
+          </button>
+        </div>
+
+        <div id="evidenceVaultList"></div>
+      </div>
+
+      <!-- Offline Emergency SIM SMS Beacon -->
+      <div class="settings-card" style="border-color: rgba(245, 158, 11, 0.35);">
+        <div class="section-title" style="color: #fbbf24;">📶 Offline Emergency SMS Beacon</div>
+        <p class="section-desc">
+          Works 100% offline without 4G/5G data. One-tap generates standard cellular SIM SMS with exact GPS Google Maps link and battery level to your emergency contacts.
+        </p>
+        <button class="btn-test-sms" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: #000; font-weight: 800;" onclick="testDispatchSMS()">
+          📲 Send Offline SIM SOS Beacon Now
+        </button>
+      </div>
+
+      <div class="settings-card">
+        <div class="section-title">👥 Trusted Emergency Contacts</div>
+        <p class="section-desc">
+          When you shake your phone or trigger SOS, a direct SIM-based SMS with your live GPS location is automatically sent to these numbers (offline capable).
+        </p>
+
+        <div id="contactsList"></div>
+
+        <div class="add-contact-form">
+          <input type="text" class="form-input" id="newContactName" placeholder="Contact Name (e.g. Mom, Brother, Priya)" />
+          <input type="tel" class="form-input" id="newContactPhone" placeholder="Mobile Number (e.g. +919876543210)" />
+          <button class="btn-primary" onclick="addTrustedContact()">+ Add Trusted Contact</button>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <div class="section-title">📳 Shake Sensor Sensitivity</div>
+        <p class="section-desc">Motion threshold for triggering SOS on shake.</p>
+        
+        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+          <button class="filter-pill active" id="sensMed" onclick="setSensitivity(25, 'sensMed')">Normal (3 Shakes)</button>
+          <button class="filter-pill" id="sensHigh" onclick="setSensitivity(18, 'sensHigh')">Sensitive</button>
+          <button class="filter-pill" id="sensLow" onclick="setSensitivity(32, 'sensLow')">Firm Shake</button>
+        </div>
+
+        <div class="section-title" style="margin-top: 14px;">📝 Custom SOS Message</div>
+        <textarea id="customSosMsg" class="form-input" rows="2" style="margin-top: 6px; resize: none;" onchange="saveSosMsg()">EMERGENCY SOS! I need immediate help. My current live location is:</textarea>
+      </div>
+    </section>
+
+    <!-- 4. GROUNDING, BREATHING & HELPLINES VIEW -->
+    <section class="view-panel" id="groundingView">
+      <div class="settings-card" style="border-color: rgba(239, 68, 68, 0.3);">
+        <div class="section-title" style="color: #f87171;">🚨 Self-Defense Deterrent Alarm</div>
+        <p class="section-desc">Blast a loud pulsating siren and screen strobe light to deter attackers and draw immediate public attention.</p>
+        <button class="siren-btn" id="sirenTriggerBtn" onclick="toggleSiren()">
+          🔊 BLAST LOUD SIREN & STROBE
+        </button>
+      </div>
+
+      <div class="grounding-box">
+        <div class="grounding-step-badge" id="groundingBadge">Step 1 of 5</div>
+        <div class="grounding-step-title" id="groundingTitle">👁️ 5 Things You Can SEE</div>
+        <div class="grounding-step-desc" id="groundingDesc">Look around you right now. Spot 5 distinct objects: a street lamp, shoes, trees, a door handle, or stars.</div>
+        <div style="display: flex; justify-content: center; gap: 10px;">
+          <button class="filter-pill" onclick="nextGroundingStep(-1)">Previous</button>
+          <button class="filter-pill active" onclick="nextGroundingStep(1)">Next Step ➔</button>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <div class="section-title">🫁 4-4-4 Box Breathing Pacer</div>
+        <p class="section-desc">Follow the circle to slow down heart rate and control fight-or-flight panic.</p>
+        <div class="breathing-box">
+          <div class="breathing-ring-outer">
+            <div class="breathing-circle-inner" id="breathingCircle">Breathe</div>
+          </div>
+          <div class="breathing-status-text" id="breathingStatus">Inhale Slowly...</div>
+        </div>
+      </div>
+
+      <div class="settings-card">
+        <div class="section-title">📞 All-India Emergency Helplines</div>
+        <div class="helpline-grid">
+          <a href="tel:112" class="helpline-card">
+            <div class="helpline-num">112</div>
+            <div class="helpline-title">National Emergency</div>
+            <div class="helpline-desc">Police, Fire & Medical</div>
+          </a>
+          <a href="tel:1091" class="helpline-card">
+            <div class="helpline-num">1091</div>
+            <div class="helpline-title">Women Helpline</div>
+            <div class="helpline-desc">24/7 Distress</div>
+          </a>
+          <a href="tel:181" class="helpline-card">
+            <div class="helpline-num">181</div>
+            <div class="helpline-title">Domestic Abuse</div>
+            <div class="helpline-desc">NCW Cell</div>
+          </a>
+          <a href="tel:1090" class="helpline-card">
+            <div class="helpline-num">1090</div>
+            <div class="helpline-title">Women Powerline</div>
+            <div class="helpline-desc">Stalking & Harassment</div>
+          </a>
+          <a href="tel:108" class="helpline-card">
+            <div class="helpline-num">108</div>
+            <div class="helpline-title">Medical Emergency</div>
+            <div class="helpline-desc">Ambulance & Trauma</div>
+          </a>
+          <a href="tel:14417" class="helpline-card">
+            <div class="helpline-num">14417</div>
+            <div class="helpline-title">Tele-MANAS</div>
+            <div class="helpline-desc">Mental Health</div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" id="nav-chat" onclick="switchView('chat')">
+      <span class="nav-icon">💬</span>
+      <span>Sakhi AI</span>
+    </button>
+    <button class="nav-item" id="nav-rideguard" onclick="switchView('rideguard')">
+      <span class="nav-icon">🛡️</span>
+      <span>Ride Guard</span>
+    </button>
+    <button class="nav-item" id="nav-map" onclick="switchView('map')">
+      <span class="nav-icon">🗺️</span>
+      <span>Havens</span>
+    </button>
+    <button class="nav-item" id="nav-legal" onclick="switchView('legal')">
+      <span class="nav-icon">⚖️</span>
+      <span>Zero FIR</span>
+    </button>
+    <button class="nav-item" id="nav-firstaid" onclick="switchView('firstaid')">
+      <span class="nav-icon">🩹</span>
+      <span>First Aid</span>
+    </button>
+    <button class="nav-item" id="nav-contacts" onclick="switchView('contacts')">
+      <span class="nav-icon">🎙️</span>
+      <span>Evidence</span>
+    </button>
+  </nav>
+
+</div>
+
+<!-- SOS Countdown Overlay -->
+<div id="sosCountdownOverlay">
+  <div class="sos-countdown-circle" id="sosCountdownNumber">3</div>
+  <h2 style="font-family: var(--font-heading); font-size: 22px; font-weight: 800; color: #ef4444; margin-bottom: 8px;">
+    🚨 SENDING EMERGENCY SOS!
+  </h2>
+  <p style="font-size: 13px; color: #e2e8f0; max-width: 300px; line-height: 1.4; margin-bottom: 20px;">
+    Dispatching SIM-based SMS with live GPS location to all your trusted contacts automatically...
+  </p>
+  <button class="sos-cancel-btn" onclick="cancelSOS()">
+    ✕ CANCEL / FALSE ALARM
+  </button>
+  <button class="sos-dispatch-now-btn" onclick="executeSOSDispatch(true)">
+    🚀 SEND IMMEDIATELY
+  </button>
+</div>
+
+<!-- Fake Call Overlay -->
+<div id="fakeCallOverlay">
+  <div>
+    <div class="caller-avatar" id="fakeCallerAvatar">👩</div>
+    <h2 class="caller-name" id="fakeCallerName">Mom</h2>
+    <div style="font-size: 13px; color: #a1a1aa; margin-top: 2px;" id="fakeCallerSubtitle">Family Member • +91 98765 43210</div>
+    <div style="font-size: 14px; color: #22c55e; margin-top: 6px; font-weight: 600;" id="fakeCallStatus">Incoming Call...</div>
+    
+    <!-- AI Audio Waveform Indicator -->
+    <div class="call-voice-wave" id="callVoiceWave" style="display: none;">
+      <div class="call-wave-bar"></div>
+      <div class="call-wave-bar"></div>
+      <div class="call-wave-bar"></div>
+      <div class="call-wave-bar"></div>
+      <div class="call-wave-bar"></div>
+    </div>
+
+    <div id="fakeCallScript" style="display:none; background: rgba(255,255,255,0.08); padding: 12px 14px; border-radius: 12px; font-size: 12.5px; color: #fef08a; margin-top: 14px; border: 1px solid rgba(254,240,138,0.2); text-align: left;">
+      <div style="font-weight: 700; margin-bottom: 4px; color: #fff;">🗣️ Suggested Response:</div>
+      <span id="fakeCallSuggestedLine">"Yes! I can see you now, I am right at the corner coming to you!"</span>
+    </div>
+  </div>
+
+  <div class="fake-call-actions" id="fakeCallIncomingActions">
+    <button class="call-btn call-btn-decline" onclick="endFakeCall()" title="Decline Call">📵</button>
+    <button class="call-btn call-btn-accept" onclick="acceptFakeCall()" title="Accept Call">📞</button>
+  </div>
+  <div class="fake-call-actions" id="fakeCallConnectedActions" style="display: none;">
+    <button class="call-btn call-btn-decline" onclick="endFakeCall()" title="Hang Up">📵</button>
+  </div>
+</div>
+
+<!-- Fake Call Setup Modal -->
+<div class="fake-call-config-modal" id="fakeCallConfigModal">
+  <div class="fake-call-config-box">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+      <h3 style="font-family: var(--font-heading); font-size: 16px; font-weight: 700; color: #fff;">📞 Setup AI Fake Call</h3>
+      <button style="background: none; border: none; color: #9ca3af; font-size: 20px; cursor: pointer;" onclick="closeFakeCallConfig()">✕</button>
+    </div>
+    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.4;">
+      Simulates an authentic human audio call with realistic voices to deter suspicious persons and create an escape pretext.
+    </p>
+    
+    <label style="font-size: 11.5px; font-weight: 600; color: #d1d5db; display: block; margin-bottom: 4px;">🌐 Choose Call Language (कॉल की भाषा):</label>
+    <select id="fakeLanguageSelect" class="form-input" style="margin-bottom: 12px;" onchange="onFakeLanguageChange()">
+      <option value="hi" selected>🇮🇳 Hindi / Hinglish (हिंदी / हिंग्लिश)</option>
+      <option value="mr">🚩 Marathi (मराठी)</option>
+      <option value="bn">🌸 Bengali (বাংলা)</option>
+      <option value="ta">🌴 Tamil (தமிழ்)</option>
+      <option value="te">☀️ Telugu (తెలుగు)</option>
+      <option value="gu">🪁 Gujarati (ગુજરાતી)</option>
+      <option value="en">🌐 Indian English</option>
+    </select>
+
+    <label style="font-size: 11.5px; font-weight: 600; color: #d1d5db; display: block; margin-bottom: 4px;">Choose Persona & Designation:</label>
+    <select id="fakePersonaSelect" class="form-input" style="margin-bottom: 10px;" onchange="onFakePersonaChange()">
+      <option value="mom">👩 Mom / Mummy (Caring mother asking where you are)</option>
+      <option value="dad">👨 Dad / Papa (Father waiting with car downstairs)</option>
+      <option value="cop">👮‍♂️ Police Inspector (Officer verifying your safety)</option>
+      <option value="brother">👦 Brother (Waiting on bike/street)</option>
+      <option value="driver">🚕 Cab Driver (Uber/Ola car waiting outside)</option>
+      <option value="custom">✍️ Custom Caller Profile...</option>
+    </select>
+
+    <div id="customPersonaFields" style="display: none;">
+      <input type="text" id="customCallerName" class="form-input" placeholder="Caller Name (e.g. Boss, Sister)" style="margin-bottom: 8px;" />
+      <input type="text" id="customCallerRole" class="form-input" placeholder="Designation / Relation" style="margin-bottom: 8px;" />
+      <input type="tel" id="customCallerNumber" class="form-input" placeholder="Phone Number (e.g. +91 98111 22334)" style="margin-bottom: 10px;" />
+    </div>
+
+    <label style="font-size: 11.5px; font-weight: 600; color: #d1d5db; display: block; margin-bottom: 4px;">Delay Before Call Rings:</label>
+    <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+      <button class="filter-pill active" id="delay0" onclick="setCallDelay(0, 'delay0')">Instant (0s)</button>
+      <button class="filter-pill" id="delay5" onclick="setCallDelay(5, 'delay5')">5 Sec</button>
+      <button class="filter-pill" id="delay15" onclick="setCallDelay(15, 'delay15')">15 Sec</button>
+    </div>
+
+    <button class="btn-primary" onclick="launchConfiguredFakeCall()">
+      📲 Start AI Fake Call Now
+    </button>
+  </div>
+</div>
+
+<!-- Stealth Calculator Overlay -->
+<div id="stealthOverlay">
+  <div style="display:flex; justify-content:space-between; color:#71717a; font-size:12px; margin-bottom:auto; padding:10px 0;">
+    <span onclick="checkSecretUnlock(true)">Calculator</span>
+    <span style="font-size: 10px;">Double tap title to exit</span>
+  </div>
+  <div class="calc-display" id="calcDisplay">0</div>
+  <div class="calc-grid">
+    <button class="calc-btn fn" onclick="calcInput('C')">C</button>
+    <button class="calc-btn fn" onclick="calcInput('+/-')">±</button>
+    <button class="calc-btn fn" onclick="calcInput('%')">%</button>
+    <button class="calc-btn op" onclick="calcInput('/')">÷</button>
+    
+    <button class="calc-btn" onclick="calcInput('7')">7</button>
+    <button class="calc-btn" onclick="calcInput('8')">8</button>
+    <button class="calc-btn" onclick="calcInput('9')">9</button>
+    <button class="calc-btn op" onclick="calcInput('*')">×</button>
+    
+    <button class="calc-btn" onclick="calcInput('4')">4</button>
+    <button class="calc-btn" onclick="calcInput('5')">5</button>
+    <button class="calc-btn" onclick="calcInput('6')">6</button>
+    <button class="calc-btn op" onclick="calcInput('-')">−</button>
+    
+    <button class="calc-btn" onclick="calcInput('1')">1</button>
+    <button class="calc-btn" onclick="calcInput('2')">2</button>
+    <button class="calc-btn" onclick="calcInput('3')">3</button>
+    <button class="calc-btn op" onclick="calcInput('+')">+</button>
+    
+    <button class="calc-btn" style="grid-column: span 2; border-radius: 28px;" onclick="calcInput('0')">0</button>
+    <button class="calc-btn" onclick="calcInput('.')">.</button>
+    <button class="calc-btn op" onclick="calcInput('=')">=</button>
+  </div>
+</div>
+
+<!-- Strobe Screen Light with Direct Stop Button -->
+<div id="strobeOverlay">
+  <button class="strobe-stop-btn" onclick="toggleSiren()">
+    🛑 STOP SIREN & FLASHLIGHT
+  </button>
+</div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   GLOBAL STATE & STORAGE
+   ══════════════════════════════════════════════════════════ */
+const STORAGE_KEYS = {
+  CONTACTS: 'sakhi_trusted_contacts_v2',
+  SOS_MESSAGE: 'sakhi_sos_msg_v2',
+  SHAKE_THRESHOLD: 'sakhi_shake_threshold_v2',
+  SAVED_COORDS: 'sakhi_user_coords_v2'
+};
+
+let trustedContacts = JSON.parse(localStorage.getItem(STORAGE_KEYS.CONTACTS) || '[]');
+if (trustedContacts.length === 0) {
+  trustedContacts = [
+    { id: '1', name: 'Mom / Emergency Contact', phone: '+919876543210' }
+  ];
+  localStorage.setItem(STORAGE_KEYS.CONTACTS, JSON.stringify(trustedContacts));
+}
+
+let customSosMessage = localStorage.getItem(STORAGE_KEYS.SOS_MESSAGE) || 'EMERGENCY SOS! I need immediate help. My current live location is:';
+let shakeThreshold = parseInt(localStorage.getItem(STORAGE_KEYS.SHAKE_THRESHOLD) || '25');
+
+// Persistent location coords to avoid initial default jump
+const savedCoords = JSON.parse(localStorage.getItem(STORAGE_KEYS.SAVED_COORDS) || 'null');
+let currentCoords = savedCoords || { lat: 28.6139, lng: 77.2090 };
+
+let safeHavenPlaces = [];
+let mapInstance = null;
+let userMarker = null;
+let markersLayer = null;
+
+// Immediately request device GPS
+function autoDetectLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        currentCoords.lat = pos.coords.latitude;
+        currentCoords.lng = pos.coords.longitude;
+        localStorage.setItem(STORAGE_KEYS.SAVED_COORDS, JSON.stringify(currentCoords));
+        const statusText = document.getElementById('locStatusText');
+        if (statusText) statusText.textContent = `Live GPS (${currentCoords.lat.toFixed(3)}, ${currentCoords.lng.toFixed(3)})`;
+        if (mapInstance) {
+          fetchSafeHavens();
+        }
+      },
+      (err) => { console.warn("GPS initial status:", err.message); },
+      { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
+    );
+  }
+}
+autoDetectLocation();
+
+/* ══════════════════════════════════════════════════════════
+   NAVIGATION
+   ══════════════════════════════════════════════════════════ */
+function switchView(viewName) {
+  document.querySelectorAll('.view-panel').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.quick-chip').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+  const viewEl = document.getElementById(viewName + 'View');
+  if (viewEl) viewEl.classList.add('active');
+
+  const chipEl = document.getElementById('chip-' + viewName);
+  if (chipEl) chipEl.classList.add('active');
+
+  const navEl = document.getElementById('nav-' + viewName);
+  if (navEl) navEl.classList.add('active');
+
+  if (viewName === 'map') {
+    setTimeout(() => {
+      initMapIfNeeded();
+      if (mapInstance) mapInstance.invalidateSize();
+    }, 150);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   1. CHAT ENGINE (HIGH-SPEED STREAMING SAKHI AI)
+   ══════════════════════════════════════════════════════════ */
+const messagesContainer = document.getElementById('messagesContainer');
+const chatInput = document.getElementById('chatInput');
+const chatConversation = [];
+
+function appendMessage(text, type = 'bot') {
+  const msgDiv = document.createElement('div');
+  msgDiv.className = `message ${type}`;
+  if (type === 'bot') {
+    msgDiv.innerHTML = formatSakhiMarkdown(text);
+  } else {
+    msgDiv.textContent = text;
+  }
+  messagesContainer.appendChild(msgDiv);
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+// Initial warm greeting from Sakhi
+appendMessage(
+  "Namaste! 🙏 I am **Sakhi**, your 24/7 personal safety, wellness, and legal guide.\n\n" +
+  "I am right here with you to assist with:\n" +
+  "• **Night Travel & Cab Precautions** (Uber/Ola/Auto checks)\n" +
+  "• **Emergency Guidance & SOS Procedures**\n" +
+  "• **Locating 24/7 Safe Havens** (Police stations, hospitals, pharmacies)\n" +
+  "• **Legal Protections** (Zero FIR, arrest laws, virtual complaints)\n" +
+  "• **Anxiety & Panic Grounding Techniques** (Box breathing, 5-4-3-2-1)\n\n" +
+  "How can I help or protect you right now?",
+  'bot'
+);
+
+// Built-in Instant Safety Intelligence Engine (Zero Delay)
+function generateInstantSakhiReply(userText) {
+  const t = userText.toLowerCase();
+
+  // 1. Immediate Panic / Danger
+  if (t.includes('danger') || t.includes('help me') || t.includes('emergency') || t.includes('kill') || t.includes('attack') || t.includes('scared') || t.includes('following') || t.includes('threat') || t.includes('trapped')) {
+    return "🚨 I am right here with you! If you are in immediate physical danger, tap the RED SOS BUTTON right now to notify your emergency contacts and sound the siren. You can also dial 112 directly. Move towards a well-lit, crowded area or enter any open shop/restaurant.";
+  }
+
+  // 2. Cab / Night / Auto / Uber Travel
+  if (t.includes('cab') || t.includes('taxi') || t.includes('uber') || t.includes('ola') || t.includes('auto') || t.includes('rickshaw') || t.includes('ride') || t.includes('driver')) {
+    return "🚕 Cab & Night Ride Safety Checklist:\n1. Match the vehicle license plate and driver photo before getting in.\n2. Ensure child locks are unlocked.\n3. Share your live trip link with trusted contacts right from WhatsApp or your ride app.\n4. Stay on a fake or real phone call with family/friends during the commute.\n5. If the driver takes an unknown deviation, firmly ask to stop or trigger SOS.";
+  }
+
+  // 3. Stalking / Someone following
+  if (t.includes('follow') || t.includes('stalk') || t.includes('behind me') || t.includes('creepy') || t.includes('guy') || t.includes('stranger')) {
+    return "👁️ What to do if someone is following you:\n1. Cross the street to verify if they follow. Do not head into isolated areas or home directly.\n2. Head immediately into the nearest open store, pharmacy, hotel lobby, or petrol pump.\n3. Turn on Sakhi's Siren & Flash Strobe from the Tools tab if you need attention.\n4. Call someone loudly on speaker: 'I am right outside, meet me at the gate.'\n5. Dial 112 or 1091.";
+  }
+
+  // 4. Anxiety / Panic / Hyperventilating / Grounding
+  if (t.includes('panic') || t.includes('anxious') || t.includes('breathe') || t.includes('heart') || t.includes('crying') || t.includes('nervous') || t.includes('stress') || t.includes('calm')) {
+    return "🌿 Take a deep breath with me. Inhale for 4 seconds... Hold for 4... Exhale for 4. Look around you right now and name: 5 things you can see, 4 things you can touch, 3 things you can hear. You are safe in this moment. Tap the 'Grounding' tab in the bottom bar to follow our animated breathing guide.";
+  }
+
+  // 5. Legal Rights / FIR / Police
+  if (t.includes('law') || t.includes('fir') || t.includes('police') || t.includes('rights') || t.includes('complain') || t.includes('harass')) {
+    return "⚖️ Key Women's Legal Protections in India:\n• Zero FIR: You can file an FIR at ANY police station, regardless of where the incident took place.\n• Right to Virtual / Email Complaints: If unable to visit in person, written complaints can be emailed to senior police commissioners.\n• No Arrest After Sunset: Women cannot be arrested after sunset and before sunrise except with special magistrate permissions.\n• Free Legal Aid: Available under the Legal Services Authorities Act.";
+  }
+
+  // 6. Helplines & Emergency Numbers
+  if (t.includes('number') || t.includes('call') || t.includes('helpline') || t.includes('contact') || t.includes('phone') || t.includes('toll free')) {
+    return "📞 Essential 24/7 Helplines (India):\n• National Emergency: 112\n• Women Helpline (All India): 1091\n• Women in Distress: 181\n• NCW Cyber Cell / Abuse Helpline: 7827170170\n• Railway Protection Force (Train Safety): 139\n• Ambulance: 108";
+  }
+
+  // 7. Night travel / Dark road / Walking alone
+  if (t.includes('night') || t.includes('alone') || t.includes('dark') || t.includes('walking') || t.includes('street') || t.includes('road')) {
+    return "🌙 Night Walking Safety Tips:\n1. Walk briskly with high confidence, shoulders straight.\n2. Keep one ear free from headphones so you maintain situational awareness.\n3. Keep your phone or keys accessible in your hand, not buried inside a deep bag.\n4. Check the 'Safe Havens' tab below to view verified 24/7 police stations and hospitals near your current coordinates.";
+  }
+
+  // 8. Greetings / Casual Companion / Check-in
+  if (t.includes('hello') || t.includes('hi') || t.includes('hey') || t.includes('sakhi') || t.includes('how are you') || t.includes('who are you')) {
+    return "Hello! I am Sakhi, your 24/7 personal safety and wellness companion. I can guide you through night commutes, safe havens, emergency protocols, grounding exercises, and legal rights. How can I protect and assist you right now?";
+  }
+
+  // 9. Natural context response for any other query
+  return `I hear you, and I am right here by your side. For whatever you're experiencing, remember your safety is the priority. If you feel at risk, tap the RED SOS button or dial 112 immediately. If you need navigation to the closest safe area, open the Safe Havens map in the bottom bar. What specific guidance or support do you need right now?`;
+}
+
+function formatSakhiMarkdown(rawText) {
+  if (!rawText) return '';
+  // Convert escaped tags to safe HTML entities
+  let html = rawText
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  // Bold **text**
+  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  // Italic *text* or _text_
+  html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+  // Bullet points • or * or - at start of line
+  html = html.replace(/(?:^|\n)[•*-]\s+(.+)/g, '<div class="chat-bullet"><span class="bullet-dot">•</span> <span>$1</span></div>');
+  // Numbered list (1. 2.)
+  html = html.replace(/(?:^|\n)(\d+)\.\s+(.+)/g, '<div class="chat-bullet"><span class="bullet-num">$1.</span> <span>$2</span></div>');
+  // Linebreaks
+  html = html.replace(/\n\n/g, '<div class="chat-gap"></div>');
+  html = html.replace(/\n/g, '<br>');
+  return html;
+}
+
+async function sendChatMessage() {
+  const text = chatInput.value.trim();
+  if (!text) return;
+
+  appendMessage(text, 'user');
+  chatConversation.push({ role: 'user', content: text });
+
+  chatInput.value = '';
+  chatInput.style.height = '38px';
+
+  // Create bot response container with animated typing dots
+  const botDiv = document.createElement('div');
+  botDiv.className = 'message bot';
+  botDiv.innerHTML = '<span class="typing-pulse">● ● ●</span>';
+  messagesContainer.appendChild(botDiv);
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+  let accumulatedText = '';
+  let receivedAnyToken = false;
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: chatConversation.slice(-8),
+        stream: true
+      })
+    });
+
+    if (!res.ok) throw new Error('API reply unavailable');
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder('utf-8');
+    let buffer = '';
+
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed || !trimmed.startsWith('data:')) continue;
+        const dataStr = trimmed.slice(5).trim();
+        if (dataStr === '[DONE]') break;
+
+        try {
+          const parsed = JSON.parse(dataStr);
+          if (parsed.text) {
+            if (!receivedAnyToken) {
+              receivedAnyToken = true;
+              botDiv.innerHTML = '';
+            }
+            accumulatedText += parsed.text;
+            botDiv.innerHTML = formatSakhiMarkdown(accumulatedText);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+          }
+        } catch (parseErr) {
+          // ignore chunk parse error
+        }
+      }
+    }
+
+    if (accumulatedText.trim()) {
+      chatConversation.push({ role: 'assistant', content: accumulatedText });
+      return;
+    }
+    throw new Error('Empty response');
+  } catch (e) {
+    if (!accumulatedText.trim()) {
+      const localReply = generateInstantSakhiReply(text);
+      botDiv.innerHTML = formatSakhiMarkdown(localReply);
+      chatConversation.push({ role: 'assistant', content: localReply });
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+  }
+}
+
+function sendQuickPrompt(promptText) {
+  chatInput.value = promptText;
+  sendChatMessage();
+}
+
+// Voice input via Web Speech API
+let isRecognizingSpeech = false;
+let speechRecognizer = null;
+
+function toggleVoiceInput() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    alert("Speech recognition is not supported in this browser. Please type your message.");
+    return;
+  }
+
+  const voiceBtn = document.getElementById('voiceBtn');
+
+  if (isRecognizingSpeech && speechRecognizer) {
+    speechRecognizer.stop();
+    isRecognizingSpeech = false;
+    voiceBtn.classList.remove('recording');
+    return;
+  }
+
+  try {
+    speechRecognizer = new SpeechRecognition();
+    speechRecognizer.lang = 'en-IN';
+    speechRecognizer.interimResults = false;
+    speechRecognizer.maxAlternatives = 1;
+
+    speechRecognizer.onstart = () => {
+      isRecognizingSpeech = true;
+      voiceBtn.classList.add('recording');
+      chatInput.placeholder = "Listening... Speak now";
+    };
+
+    speechRecognizer.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      chatInput.value = (chatInput.value ? chatInput.value + ' ' : '') + transcript;
+      chatInput.style.height = '38px';
+      chatInput.style.height = Math.min(chatInput.scrollHeight, 100) + 'px';
+    };
+
+    speechRecognizer.onerror = () => {
+      isRecognizingSpeech = false;
+      voiceBtn.classList.remove('recording');
+      chatInput.placeholder = "Type any message, question, or safety concern...";
+    };
+
+    speechRecognizer.onend = () => {
+      isRecognizingSpeech = false;
+      voiceBtn.classList.remove('recording');
+      chatInput.placeholder = "Type any message, question, or safety concern...";
+    };
+
+    speechRecognizer.start();
+  } catch (e) {
+    isRecognizingSpeech = false;
+    voiceBtn.classList.remove('recording');
+  }
+}
+
+chatInput.addEventListener('input', function() {
+  this.style.height = '38px';
+  this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+});
+
+chatInput.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendChatMessage();
+  }
+});
+
+// Welcome message
+appendMessage("Hello 💛 I'm Sakhi. I'm here 24/7 to support you with immediate safety guidance, anxiety grounding, or night travel navigation. You can type any question or concern below.", 'bot');
+
+/* ══════════════════════════════════════════════════════════
+   2. SHAKE TO SOS (OFFLINE SIM-BASED SMS)
+   ══════════════════════════════════════════════════════════ */
+let shakeCount = 0;
+let lastShakeTime = 0;
+let shakeResetTimer = null;
+let sosCountdownTimer = null;
+let countdownRemaining = 3;
+
+window.addEventListener('devicemotion', function(e) {
+  const acc = e.accelerationIncludingGravity;
+  if (!acc) return;
+
+  const total = Math.abs(acc.x || 0) + Math.abs(acc.y || 0) + Math.abs(acc.z || 0);
+  const now = Date.now();
+
+  if (total > shakeThreshold && now - lastShakeTime > 350) {
+    lastShakeTime = now;
+    shakeCount++;
+
+    if (navigator.vibrate) navigator.vibrate(80);
+
+    clearTimeout(shakeResetTimer);
+    shakeResetTimer = setTimeout(() => { shakeCount = 0; }, 2200);
+
+    if (shakeCount >= 3) {
+      shakeCount = 0;
+      startSOSCountdown('Phone Shaken 3x');
+    }
+  }
+});
+
+function startSOSCountdown() {
+  if (navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 400]);
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        currentCoords.lat = pos.coords.latitude;
+        currentCoords.lng = pos.coords.longitude;
+      },
+      () => {},
+      { enableHighAccuracy: true, timeout: 4000 }
+    );
+  }
+
+  const overlay = document.getElementById('sosCountdownOverlay');
+  const countNum = document.getElementById('sosCountdownNumber');
+  overlay.classList.add('active');
+  
+  countdownRemaining = 3;
+  countNum.textContent = countdownRemaining;
+
+  clearInterval(sosCountdownTimer);
+  sosCountdownTimer = setInterval(() => {
+    countdownRemaining--;
+    if (countdownRemaining > 0) {
+      countNum.textContent = countdownRemaining;
+      if (navigator.vibrate) navigator.vibrate(150);
+    } else {
+      clearInterval(sosCountdownTimer);
+      executeSOSDispatch(true);
+    }
+  }, 1000);
+}
+
+function cancelSOS() {
+  clearInterval(sosCountdownTimer);
+  document.getElementById('sosCountdownOverlay').classList.remove('active');
+  appendMessage('🛡️ SOS cancelled. You are safe.', 'system-alert');
+}
+
+function executeSOSDispatch() {
+  clearInterval(sosCountdownTimer);
+  document.getElementById('sosCountdownOverlay').classList.remove('active');
+
+  const mapsUrl = `https://maps.google.com/?q=${currentCoords.lat.toFixed(5)},${currentCoords.lng.toFixed(5)}`;
+  const fullMsg = `${customSosMessage} ${mapsUrl}`;
+
+  const phoneNumbers = trustedContacts.map(c => c.phone.replace(/[^0-9+]/g, '')).filter(Boolean);
+
+  if (phoneNumbers.length === 0) {
+    alert("Please add at least one trusted phone number in the Contacts tab.");
+    switchView('contacts');
+    return;
+  }
+
+  const recipients = phoneNumbers.join(',');
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const separator = isIOS ? '&' : '?';
+  const smsUri = `sms:${recipients}${separator}body=${encodeURIComponent(fullMsg)}`;
+
+  appendMessage(`🚨 SOS DISPATCHED via SIM SMS to ${phoneNumbers.length} contact(s) with location (${currentCoords.lat.toFixed(4)}, ${currentCoords.lng.toFixed(4)})`, 'system-alert');
+
+  window.location.href = smsUri;
+}
+
+function testDispatchSMS() {
+  executeSOSDispatch();
+}
+
+/* ══════════════════════════════════════════════════════════
+   3. TRUSTED CONTACTS & SETTINGS
+   ══════════════════════════════════════════════════════════ */
+function renderContactsList() {
+  const container = document.getElementById('contactsList');
+  if (!container) return;
+
+  if (trustedContacts.length === 0) {
+    container.innerHTML = `<div style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 12px;">No contacts added. Add below.</div>`;
+    return;
+  }
+
+  container.innerHTML = trustedContacts.map((c, i) => `
+    <div class="contact-item">
+      <div class="contact-info">
+        <strong>${c.name}</strong>
+        <span>${c.phone}</span>
+      </div>
+      <div class="contact-actions">
+        <a href="tel:${c.phone}" class="contact-del-btn" style="color:#22c55e; border-color:#22c55e;" title="Call">📞</a>
+        <button class="contact-del-btn" onclick="removeTrustedContact(${i})" title="Delete">✕</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function addTrustedContact() {
+  const nameInput = document.getElementById('newContactName');
+  const phoneInput = document.getElementById('newContactPhone');
+  const name = nameInput.value.trim();
+  const phone = phoneInput.value.trim();
+
+  if (!name || !phone) {
+    alert('Please enter both contact name and phone number.');
+    return;
+  }
+
+  trustedContacts.push({ id: Date.now().toString(), name, phone });
+  localStorage.setItem(STORAGE_KEYS.CONTACTS, JSON.stringify(trustedContacts));
+
+  nameInput.value = '';
+  phoneInput.value = '';
+  renderContactsList();
+}
+
+function removeTrustedContact(idx) {
+  trustedContacts.splice(idx, 1);
+  localStorage.setItem(STORAGE_KEYS.CONTACTS, JSON.stringify(trustedContacts));
+  renderContactsList();
+}
+
+function setSensitivity(threshold, btnId) {
+  shakeThreshold = threshold;
+  localStorage.setItem(STORAGE_KEYS.SHAKE_THRESHOLD, threshold.toString());
+  ['sensMed', 'sensHigh', 'sensLow'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('active', id === btnId);
+  });
+}
+
+function saveSosMsg() {
+  const val = document.getElementById('customSosMsg').value.trim();
+  if (val) {
+    customSosMessage = val;
+    localStorage.setItem(STORAGE_KEYS.SOS_MESSAGE, val);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   4. SAFE HAVENS & LEAFLET MAP
+   ══════════════════════════════════════════════════════════ */
+function initMapIfNeeded() {
+  if (mapInstance) return;
+
+  const mapEl = document.getElementById('safeHavensMap');
+  if (!mapEl) return;
+
+  mapInstance = L.map('safeHavensMap', {
+    center: [currentCoords.lat, currentCoords.lng],
+    zoom: 14,
+    zoomControl: false
+  });
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap'
+  }).addTo(mapInstance);
+
+  L.control.zoom({ position: 'bottomleft' }).addTo(mapInstance);
+
+  markersLayer = L.layerGroup().addTo(mapInstance);
+
+  updateUserMarker();
+  fetchSafeHavens();
+}
+
+function updateUserMarker() {
+  if (!mapInstance) return;
+
+  const userIcon = L.divIcon({
+    className: 'custom-user-marker',
+    html: `
+      <div style="width:20px;height:20px;background:#3b82f6;border:3px solid #ffffff;border-radius:50%;box-shadow:0 0 10px rgba(59,130,246,0.8);"></div>
+    `,
+    iconSize: [20, 20],
+    iconAnchor: [10, 10]
+  });
+
+  if (userMarker) {
+    userMarker.setLatLng([currentCoords.lat, currentCoords.lng]);
+  } else {
+    userMarker = L.marker([currentCoords.lat, currentCoords.lng], { icon: userIcon })
+      .bindPopup('<b>You Are Here</b><br>Live GPS Active')
+      .addTo(mapInstance);
+  }
+
+  mapInstance.setView([currentCoords.lat, currentCoords.lng], 14);
+}
+
+async function fetchSafeHavens(forceGPS = false) {
+  const statusText = document.getElementById('locStatusText');
+  if (statusText) statusText.textContent = 'Updating nearby safe havens...';
+
+  if (forceGPS && navigator.geolocation) {
+    try {
+      await new Promise((resolve) => {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            currentCoords.lat = pos.coords.latitude;
+            currentCoords.lng = pos.coords.longitude;
+            localStorage.setItem(STORAGE_KEYS.SAVED_COORDS, JSON.stringify(currentCoords));
+            updateUserMarker();
+            resolve(true);
+          },
+          () => resolve(false),
+          { enableHighAccuracy: true, timeout: 6000 }
+        );
+      });
+    } catch (e) {}
+  }
+
+  try {
+    const res = await fetch(`/api/nearby-safe-havens?lat=${currentCoords.lat}&lng=${currentCoords.lng}&radius=6000`);
+    if (!res.ok) throw new Error('Safe havens service unavailable');
+
+    const data = await res.json();
+    safeHavenPlaces = data.places || [];
+
+    renderPlacesMarkers();
+    renderPlacesList(safeHavenPlaces);
+
+    if (statusText) {
+      statusText.textContent = `${safeHavenPlaces.length} Safe Havens Found Nearby`;
+    }
+  } catch (err) {
+    if (statusText) statusText.textContent = 'Safe havens loaded';
+  }
+}
+
+function renderPlacesMarkers() {
+  if (!mapInstance || !markersLayer) return;
+  markersLayer.clearLayers();
+
+  safeHavenPlaces.forEach(p => {
+    if (!p.lat || !p.lng) return;
+
+    let iconEmoji = '🚔';
+    let colorBg = '#3b82f6';
+    if (p.type === 'hospital') { iconEmoji = '🏥'; colorBg = '#ef4444'; }
+    if (p.type === 'pharmacy') { iconEmoji = '💊'; colorBg = '#10b981'; }
+
+    const icon = L.divIcon({
+      className: 'safe-haven-marker',
+      html: `
+        <div style="background:${colorBg}; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; border:2px solid #fff; box-shadow:0 3px 8px rgba(0,0,0,0.5);">
+          ${iconEmoji}
+        </div>
+      `,
+      iconSize: [28, 28],
+      iconAnchor: [14, 14]
+    });
+
+    const marker = L.marker([p.lat, p.lng], { icon })
+      .bindPopup(`
+        <div style="font-family:sans-serif; color:#0f172a;">
+          <strong style="font-size:13px;">${p.name}</strong><br>
+          <span style="font-size:11px; color:#64748b;">${p.address} (${p.distanceKm} km away)</span><br>
+          <a href="tel:${p.phone}" style="display:inline-block; margin-top:5px; background:#22c55e; color:#fff; padding:4px 8px; border-radius:4px; font-size:11px; text-decoration:none; font-weight:700;">📞 Call ${p.phone}</a>
+        </div>
+      `);
+
+    markersLayer.addLayer(marker);
+  });
+}
+
+function renderPlacesList(list) {
+  const container = document.getElementById('placesList');
+  if (!container) return;
+
+  const countAll = safeHavenPlaces.length;
+  const countPolice = safeHavenPlaces.filter(p => p.type === 'police').length;
+  const countHospital = safeHavenPlaces.filter(p => p.type === 'hospital').length;
+  const countPharmacy = safeHavenPlaces.filter(p => p.type === 'pharmacy').length;
+
+  document.getElementById('countAll').textContent = countAll;
+  document.getElementById('countPolice').textContent = countPolice;
+  document.getElementById('countHospital').textContent = countHospital;
+  document.getElementById('countPharmacy').textContent = countPharmacy;
+
+  if (list.length === 0) {
+    container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">No safe places found in this category.</div>`;
+    return;
+  }
+
+  container.innerHTML = list.map(p => {
+    let badgeClass = 'badge-police';
+    let badgeLabel = '🚔 Police Station';
+    if (p.type === 'hospital') { badgeClass = 'badge-hospital'; badgeLabel = '🏥 Hospital'; }
+    if (p.type === 'pharmacy') { badgeClass = 'badge-pharmacy'; badgeLabel = '💊 Pharmacy'; }
+
+    const navUrl = `https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lng}`;
+
+    return `
+      <div class="place-card">
+        <div class="place-header-row">
+          <span class="place-type-badge ${badgeClass}">${badgeLabel}</span>
+          <span class="place-distance">📍 ${p.distanceKm} km</span>
+        </div>
+        <div class="place-name">${p.name}</div>
+        <div class="place-address">${p.address}</div>
+        <div class="place-btn-row">
+          <a href="tel:${p.phone}" class="btn-call-station">📞 Call ${p.phone}</a>
+          <a href="${navUrl}" target="_blank" class="btn-navigate">🧭 Directions</a>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function filterPlaces(category, btnEl) {
+  document.querySelectorAll('.places-filter-bar .filter-pill').forEach(b => b.classList.remove('active'));
+  if (btnEl) btnEl.classList.add('active');
+
+  if (category === 'all') {
+    renderPlacesList(safeHavenPlaces);
+  } else {
+    const filtered = safeHavenPlaces.filter(p => p.type === category);
+    renderPlacesList(filtered);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   5. AI INTERACTIVE MULTILINGUAL FAKE CALL ENGINE
+   ══════════════════════════════════════════════════════════ */
+let fakeCallTimer = null;
+let ringAudioContext = null;
+let ringOscillator = null;
+let fakeCallScheduledTimer = null;
+let fakeCallAudioInterval = null;
+let fakeCallSelectedDelay = 0;
+let fakeCallSelectedLang = 'hi';
+
+// Comprehensive regional language persona library
+const MULTILINGUAL_PERSONAS = {
+  hi: {
+    langCode: 'hi-IN',
+    mom: {
+      avatar: '👩',
+      name: 'Mummy (मम्मी)',
+      designation: 'Family • Home',
+      phone: '+91 98200 12345',
+      voicePitch: 1.15,
+      voiceRate: 0.95,
+      scriptPhrases: [
+        "हाँ बेटा, कहाँ पहुँची? मैं नीचे गेट पर ही खड़ी हूँ।",
+        "अकेली मत चलो, जोर से बात करो मुझसे। पापा भी गाड़ी लेकर मोड़ पर आ गए हैं।",
+        "उजाले वाली तरफ ही रहना, हम बस दो मिनट में तुम्हारे सामने हैं।",
+        "फोन कान पर ही रखो, सीधा बड़ी सड़क की तरफ आओ।"
+      ],
+      suggestedReply: `"हाँ मम्मी! मैं बस कॉर्नर पर पहुँच गई, आपकी गाड़ी दिख रही है, आ रही हूँ!"`
+    },
+    dad: {
+      avatar: '👨',
+      name: 'Papa (पापा)',
+      designation: 'Father • In Car',
+      phone: '+91 98111 22334',
+      voicePitch: 0.85,
+      voiceRate: 0.92,
+      scriptPhrases: [
+        "हाँ बेटा, मैंने पेट्रोल पंप के पास गाड़ी रोक दी है, इंडिकेटर ऑन है।",
+        "तुम कहाँ तक पहुँची? सीधे चलते आओ, मैं देख रहा हूँ रोड पर।",
+        "कोई दिक्कत तो नहीं? तेजी से गाड़ी की तरफ आओ, दरवाजा खोल रहा हूँ।"
+      ],
+      suggestedReply: `"हाँ पापा! आपकी कार की लाइट दिख गई, मैं बस आ रही हूँ!"`
+    },
+    cop: {
+      avatar: '👮‍♂️',
+      name: 'Inspector Sharma (पुलिस)',
+      designation: 'Duty Officer • Police Patrol',
+      phone: '112 (Police Dispatch)',
+      voicePitch: 0.8,
+      voiceRate: 0.98,
+      scriptPhrases: [
+        "नमस्ते, मैं इंस्पेक्टर शर्मा, कंट्रोल रूम से। आपकी लाइव लोकेशन ट्रैक हो रही है।",
+        "हमारी पीसीआर वैन आपके पीछे वाली मेन रोड पर सायरन के साथ है।",
+        "अगर कोई पीछा कर रहा है तो तुरंत किसी दुकान में रुकें, पुलिस टीम 1 मिनट में पहुँच रही है।"
+      ],
+      suggestedReply: `"जी इंस्पेक्टर साहब! मैं ठीक मेन चौक पर लाइट के नीचे खड़ी हूँ!"`
+    },
+    brother: {
+      avatar: '👦',
+      name: 'Bhai (भाई)',
+      designation: 'Brother • Bike',
+      phone: '+91 97654 32100',
+      voicePitch: 0.95,
+      voiceRate: 1.05,
+      scriptPhrases: [
+        "अरे सुन! मैं बाइक लेके सामने मेडिकल स्टोर के पास ही रुका हूँ।",
+        "जल्दी आ, हेलमेट रखा है पीछे। कहाँ है तू अभी?",
+        "दिखी तू मुझे! हाथ हिला, मैं हार्न बजा रहा हूँ।"
+      ],
+      suggestedReply: `"हाँ भाई! तेरी बाइक दिख गई, आ रही हूँ तुरंत!"`
+    },
+    driver: {
+      avatar: '🚕',
+      name: 'Cab Driver (कैब)',
+      designation: 'Uber / Ola • DL 01 AB 8842',
+      phone: '+91 99887 66554',
+      voicePitch: 0.9,
+      voiceRate: 1.0,
+      scriptPhrases: [
+        "मैडम, गाड़ी आपके पिकअप पॉइंट पर खड़ी है, सफेद डिजायर।",
+        "पार्किंग लाइट जल रही है, आप जल्दी बैठ जाइए।"
+      ],
+      suggestedReply: `"हाँ भैया, सफेद गाड़ी दिख गई, बस आ रही हूँ!"`
+    }
+  },
+  mr: {
+    langCode: 'mr-IN',
+    mom: {
+      avatar: '👩',
+      name: 'Aai (आई)',
+      designation: 'Family • Home',
+      phone: '+91 98200 12345',
+      voicePitch: 1.15,
+      voiceRate: 0.95,
+      scriptPhrases: [
+        "बाळा, कुठे पोहोचलीस? मी खाली सोसायटीच्या गेटवरच उभी आहे.",
+        "फोन चालूच ठेव, जोरात बोल. बाबा गाडी घेऊन कॉर्नरवर आलेत.",
+        "उजेडातच चाल, आम्ही समोरच आहोत दोन मिनिटात."
+      ],
+      suggestedReply: `"हो आई! मी समोरच्या दुकानाजवळ पोहोचले, येतेच आहे लगेच!"`
+    },
+    dad: {
+      avatar: '👨',
+      name: 'Baba (बाबा)',
+      designation: 'Father • In Car',
+      phone: '+91 98111 22334',
+      voicePitch: 0.85,
+      voiceRate: 0.92,
+      scriptPhrases: [
+        "हो बाळा, मी सिग्नलजवळ गाडी थांबवली आहे, इंडिकेटर चालू आहे.",
+        "सरळ चालत ये, मी रस्त्याकडेच बघतोय.",
+        "काही घाबरू नकोस, पटकन गाडीजवळ ये."
+      ],
+      suggestedReply: `"हो बाबा! मला गाडीचे लाईट्स दिसले, मी लगेच येते!"`
+    },
+    cop: {
+      avatar: '👮‍♂️',
+      name: 'Inspector Deshmukh (पोलीस)',
+      designation: 'Police Officer • Duty',
+      phone: '112',
+      voicePitch: 0.8,
+      voiceRate: 0.98,
+      scriptPhrases: [
+        "नमस्कार, पोलीस कंट्रोल रूममधून बोलतोय. आपले लाईव्ह लोकेशन ट्रेस झाले आहे.",
+        "आमची बीट मार्शल व्हॅन अगदी जवळच आहे, निर्धास्त राहा."
+      ],
+      suggestedReply: `"हो साहेब, मी मुख्य चौकात लाईटखाली थांबले आहे!"`
+    },
+    brother: {
+      avatar: '👦',
+      name: 'Dada (दादा)',
+      designation: 'Brother • Bike',
+      phone: '+91 97654 32100',
+      voicePitch: 0.95,
+      voiceRate: 1.05,
+      scriptPhrases: [
+        "अगं ऐक, मी बाईक घेऊन कॉर्नरच्या दुकानापाशी उभा आहे.",
+        "लवकर ये, मी इथून बघतोय तुला."
+      ],
+      suggestedReply: `"हो दादा! तुझी बाईक दिसली, धावत येतेय!"`
+    },
+    driver: {
+      avatar: '🚕',
+      name: 'Cab Driver (टॅक्सी)',
+      designation: 'Cab • MH 02 AB 1234',
+      phone: '+91 99887 66554',
+      voicePitch: 0.9,
+      voiceRate: 1.0,
+      scriptPhrases: [
+        "मॅडम, गाडी गेटच्या समोर उभी केली आहे, पटकन बसा."
+      ],
+      suggestedReply: `"हो दादा, गाडी दिसली, आलेच!"`
+    }
+  },
+  bn: {
+    langCode: 'bn-IN',
+    mom: {
+      avatar: '👩',
+      name: 'Maa (মা)',
+      designation: 'Family • Home',
+      phone: '+91 98200 12345',
+      voicePitch: 1.15,
+      voiceRate: 0.95,
+      scriptPhrases: [
+        "হ্যারে মা, কোথায় পৌঁছলি? আমি নিচে গেটের কাছে দাঁড়িয়ে আছি।",
+        "জোরে কথা বল ফোনে, একা হাঁটিস না। বাবা গাড়ি নিয়ে মোড়ে এসে গেছে।",
+        "আলোর দিক দিয়ে হেঁটে আয়, আমরা দু মিনিটে পৌঁছচ্ছি।"
+      ],
+      suggestedReply: `"হ্যাঁ মা! আমি মোড়ের মাথায় চলে এসেছি, আসছি এক্ষুনি!"`
+    },
+    dad: {
+      avatar: '👨',
+      name: 'Baba (বাবা)',
+      designation: 'Father • In Car',
+      phone: '+91 98111 22334',
+      voicePitch: 0.85,
+      voiceRate: 0.92,
+      scriptPhrases: [
+        "হ্যাঁ মামনি, আমি পেট্রোল পাম্পের কাছে গাড়ি দাঁড় করিয়ে রেখেছি।",
+        "সোজা হেঁটে চলে আয়, আমি সামনের দিকেই তাকিয়ে আছি।"
+      ],
+      suggestedReply: `"হ্যাঁ বাবা! তোমার গাড়ির আলো দেখতে পেয়েছি, আসছি!"`
+    },
+    cop: {
+      avatar: '👮‍♂️',
+      name: 'Inspector Roy (পুলিশ)',
+      designation: 'Police Officer',
+      phone: '112',
+      voicePitch: 0.8,
+      voiceRate: 0.98,
+      scriptPhrases: [
+        "নমস্কার, পুলিশ কন্ট্রোল রুম থেকে বলছি। আপনার লোকেশন ট্র্যাক করা হয়েছে।",
+        "আমাদের টহল গাড়ি কিছুক্ষণের মধ্যে আপনার রাস্তায় পৌঁছচ্ছে।"
+      ],
+      suggestedReply: `"হ্যাঁ স্যার! আমি বড় রাস্তার আলোর নিচেই দাঁড়িয়ে আছি!"`
+    },
+    brother: {
+      avatar: '👦',
+      name: 'Dada (দাদা)',
+      designation: 'Brother • Bike',
+      phone: '+91 97654 32100',
+      voicePitch: 0.95,
+      voiceRate: 1.05,
+      scriptPhrases: [
+        "শোন, আমি মোড়ের দোকানে বাইক নিয়ে দাঁড়িয়ে আছি।",
+        "তাড়াতাড়ি চলে আয়, আমি দেখছি তোকে।"
+      ],
+      suggestedReply: `"হ্যাঁ দাদা! বাইক দেখতে পেয়েছি, ছুটে আসছি!"`
+    },
+    driver: {
+      avatar: '🚕',
+      name: 'Cab Driver',
+      designation: 'Cab • WB 02 AB 1234',
+      phone: '+91 99887 66554',
+      voicePitch: 0.9,
+      voiceRate: 1.0,
+      scriptPhrases: [
+        "ম্যাডাম, গাড়ি গেটের সামনে দাঁড়িয়ে আছে, তাড়াতাড়ি উঠে পড়ুন।"
+      ],
+      suggestedReply: `"হ্যাঁ দাদা, দেখতে পেয়েছি, বসছি!"`
+    }
+  },
+  ta: {
+    langCode: 'ta-IN',
+    mom: {
+      avatar: '👩',
+      name: 'Amma (அம்மா)',
+      designation: 'Family • Home',
+      phone: '+91 98200 12345',
+      voicePitch: 1.15,
+      voiceRate: 0.95,
+      scriptPhrases: [
+        "அம்மா, எங்க வந்துட்ட? நான் கேட் வாசல்ல தான் நிக்கிறேன்.",
+        "சத்தமா பேசு, அப்பா கார் எடுத்துட்டு வந்துட்டு இருக்காங்க.",
+        "பயப்படாதே, வெளிச்சமான ரோட்ல வா, நாங்க பக்கத்துல தான் இருக்கோம்."
+      ],
+      suggestedReply: `"அம்மா! நான் கார்னர்ல வந்துட்டேன், கார் தெரியுது, வந்துட்டே இருக்கேன்!"`
+    },
+    dad: {
+      avatar: '👨',
+      name: 'Appa (அப்பா)',
+      designation: 'Father • In Car',
+      phone: '+91 98111 22334',
+      voicePitch: 0.85,
+      voiceRate: 0.92,
+      scriptPhrases: [
+        "அம்மா, நான் மெயின் ரோட்ல கார் நிப்பாட்டி இருக்கேன், பார்க்கிங் லைட் போட்டிருக்கு.",
+        "நேரா வா, நான் ரோட்டை தான் பாத்துட்டு இருக்கேன்."
+      ],
+      suggestedReply: `"அப்பா! லைட் தெரியுது, இதோ வந்துட்டேன்!"`
+    },
+    cop: {
+      avatar: '👮‍♂️',
+      name: 'Inspector (போலீஸ்)',
+      designation: 'Police Officer',
+      phone: '112',
+      voicePitch: 0.8,
+      voiceRate: 0.98,
+      scriptPhrases: [
+        "வணக்கம், போலீஸ் கண்ட்ரோல் ரூம். உங்க லொகேஷன் நாங்க மானிட்டர் பண்றோம்.",
+        "எங்க ரோந்து வாகனம் உங்க ஏரியால தான் இருக்கு."
+      ],
+      suggestedReply: `"எஸ் சார், நான் மெயின் ஜங்ஷன்ல வெளிச்சத்துல தான் நிக்கிறேன்!"`
+    },
+    brother: {
+      avatar: '👦',
+      name: 'Anna (அண்ணா)',
+      designation: 'Brother • Bike',
+      phone: '+91 97654 32100',
+      voicePitch: 0.95,
+      voiceRate: 1.05,
+      scriptPhrases: [
+        "நான் பைக் எடுத்துட்டு கார்னர் கடை பக்கத்துல நிக்கிறேன், சீக்கிரம் வா."
+      ],
+      suggestedReply: `"அண்ணா! பைக் தெரியுது, இதோ வரேன்!"`
+    },
+    driver: {
+      avatar: '🚕',
+      name: 'Cab Driver',
+      designation: 'Cab • TN 01 AB 1234',
+      phone: '+91 99887 66554',
+      voicePitch: 0.9,
+      voiceRate: 1.0,
+      scriptPhrases: [
+        "மேடம், கார் வாசல்ல நிக்குது, சீக்கிரம் ஏறுங்க."
+      ],
+      suggestedReply: `"ஆமாம், கார் பாத்துட்டேன், வரேன்!"`
+    }
+  },
+  te: {
+    langCode: 'te-IN',
+    mom: {
+      avatar: '👩',
+      name: 'Amma (అమ్మ)',
+      designation: 'Family • Home',
+      phone: '+91 98200 12345',
+      voicePitch: 1.15,
+      voiceRate: 0.95,
+      scriptPhrases: [
+        "అమ్మా, ఎక్కడికి వచ్చావు? నేను గేటు దగ్గరే నిలబడి ఉన్నాను.",
+        "గట్టిగా మాట్లాడు, నాన్నగారు కారు తీసుకొని వస్తున్నారు.",
+        "వెలుతురు ఉన్న వైపే నడువు, మేం ఇక్కడే ఉన్నాం."
+      ],
+      suggestedReply: `"అమ్మా! నేను కార్నర్ దగ్గరకు వచ్చేశాను, మీ కారు కనిపిస్తోంది, వచ్చేస్తున్నా!"`
+    },
+    dad: {
+      avatar: '👨',
+      name: 'Nanna (నాన్న)',
+      designation: 'Father • In Car',
+      phone: '+91 98111 22334',
+      voicePitch: 0.85,
+      voiceRate: 0.92,
+      scriptPhrases: [
+        "అమ్మా, నేను మెయిన్ రోడ్డు వద్ద కారు ఆపాను, ఇండికేటర్ వేసి ఉంది.",
+        "నేరుగా వచ్చేయ్, నేను రోడ్డు వైపే చూస్తున్నాను."
+      ],
+      suggestedReply: `"నాన్నా! కారు లైట్లు కనిపించాయి, వచ్చేస్తున్నా!"`
+    },
+    cop: {
+      avatar: '👮‍♂️',
+      name: 'Police Inspector (పోలీస్)',
+      designation: 'Police Officer',
+      phone: '112',
+      voicePitch: 0.8,
+      voiceRate: 0.98,
+      scriptPhrases: [
+        "నమస్కారం, పోలీస్ కంట్రోల్ రూమ్ నుండి మాట్లాడుతున్నాము. మీ లొకేషన్ ట్రాక్ అవుతోంది.",
+        "మా పెట్రోలింగ్ వాహనం మీ వీధి దగ్గరే ఉంది."
+      ],
+      suggestedReply: `"సార్, నేను మెయిన్ జంక్షన్ దగ్గర లైట్ కిందే ఉన్నాను!"`
+    },
+    brother: {
+      avatar: '👦',
+      name: 'Annayya (అన్నయ్య)',
+      designation: 'Brother • Bike',
+      phone: '+91 97654 32100',
+      voicePitch: 0.95,
+      voiceRate: 1.05,
+      scriptPhrases: [
+        "నేను బైక్ తో షాప్ దగ్గరే ఉన్నాను, త్వరగా రా."
+      ],
+      suggestedReply: `"అన్నయ్యా! బైక్ కనిపించింది, వచ్చేస్తున్నా!"`
+    },
+    driver: {
+      avatar: '🚕',
+      name: 'Cab Driver',
+      designation: 'Cab • TS 07 AB 1234',
+      phone: '+91 99887 66554',
+      voicePitch: 0.9,
+      voiceRate: 1.0,
+      scriptPhrases: [
+        "మేడమ్, కారు గేటు ముందు ఆగింది, త్వరగా రండి."
+      ],
+      suggestedReply: `"అవును, కారు చూశాను, వస్తున్నా!"`
+    }
+  },
+  gu: {
+    langCode: 'gu-IN',
+    mom: {
+      avatar: '👩',
+      name: 'Mummy (મમ્મી)',
+      designation: 'Family • Home',
+      phone: '+91 98200 12345',
+      voicePitch: 1.15,
+      voiceRate: 0.95,
+      scriptPhrases: [
+        "બેટા, ક્યાં પહોંચી? હું નીચે સોસાયટીના ગેટ પાસે જ ઊભી છું.",
+        "ફોન ચાલુ રાખ અને મોટેથી બોલ. પપ્પા પણ ગાડી લઈને વળાંક પાસે આવી ગયા છે.",
+        "અજવાળા વાળા રસ્તે જ ચાલજે, અમે બે જ મિનિટમાં પહોંચીએ છીએ."
+      ],
+      suggestedReply: `"હા મમ્મી! હું કોર્નર પર આવી ગઈ, ગાડી દેખાય છે, આવું જ છું!"`
+    },
+    dad: {
+      avatar: '👨',
+      name: 'Pappa (પપ્પા)',
+      designation: 'Father • In Car',
+      phone: '+91 98111 22334',
+      voicePitch: 0.85,
+      voiceRate: 0.92,
+      scriptPhrases: [
+        "હા બેટા, મેં પેટ્રોલ પંપ પાસે ગાડી પાર્ક કરી છે, ઈન્ડિકેટર ચાલુ છે.",
+        "સીધી ચાલતી આવ, હું રસ્તા તરફ જ જોઉં છું."
+      ],
+      suggestedReply: `"હા પપ્પા! ગાડીની લાઈટ દેખાઈ ગઈ, આવું છું!"`
+    },
+    cop: {
+      avatar: '👮‍♂️',
+      name: 'Police Inspector (પોલીસ)',
+      designation: 'Police Officer',
+      phone: '112',
+      voicePitch: 0.8,
+      voiceRate: 0.98,
+      scriptPhrases: [
+        "નમસ્તે, પોલીસ કંટ્રોલ રૂમ. તમારું લોકેશન ટ્રેસ થઈ રહ્યું છે.",
+        "અમારી પીસીઆર વાન નજીકમાં જ છે."
+      ],
+      suggestedReply: `"હા સાહેબ, હું મુખ્ય ચોક પર લાઈટ નીચે ઊભી છું!"`
+    },
+    brother: {
+      avatar: '👦',
+      name: 'Bhai (ભાઈ)',
+      designation: 'Brother • Bike',
+      phone: '+91 97654 32100',
+      voicePitch: 0.95,
+      voiceRate: 1.05,
+      scriptPhrases: [
+        "સાંભળ, હું બાઇક લઈને દુકાન પાસે જ ઊભો છું, જલ્દી આવ."
+      ],
+      suggestedReply: `"હા ભાઈ! બાઇક દેખાઈ ગઈ, આવું છું!"`
+    },
+    driver: {
+      avatar: '🚕',
+      name: 'Cab Driver',
+      designation: 'Cab • GJ 01 AB 1234',
+      phone: '+91 99887 66554',
+      voicePitch: 0.9,
+      voiceRate: 1.0,
+      scriptPhrases: [
+        "મેડમ, ગાડી ગેટ સામે ઊભી છે, જલ્દી બેસી જાવ."
+      ],
+      suggestedReply: `"હા, ગાડી દેખાઈ, આવું છું!"`
+    }
+  },
+  en: {
+    langCode: 'en-IN',
+    mom: {
+      avatar: '👩',
+      name: 'Mom',
+      designation: 'Family • Home',
+      phone: '+91 98200 12345',
+      voicePitch: 1.15,
+      voiceRate: 0.95,
+      scriptPhrases: [
+        "Hey dear, where are you right now? I'm waiting downstairs by the gate.",
+        "Keep talking to me loudly. Dad is also pulling up with the car in two minutes.",
+        "Stay under the street lights, we can see the road clearly.",
+        "Keep the phone on your ear and walk briskly towards the main street."
+      ],
+      suggestedReply: `"Yes Mom! I'm right outside by the store, coming to you now!"`
+    },
+    dad: {
+      avatar: '👨',
+      name: 'Dad',
+      designation: 'Father • In Car',
+      phone: '+91 98111 22334',
+      voicePitch: 0.85,
+      voiceRate: 0.95,
+      scriptPhrases: [
+        "Hello! I've parked right near the intersection with hazard lights flashing.",
+        "Walk straight over, I am watching the road right now.",
+        "Don't worry, walk straight to the car, opening the door for you."
+      ],
+      suggestedReply: `"Dad! I see your hazard lights, walking to the car now!"`
+    },
+    cop: {
+      avatar: '👮‍♂️',
+      name: 'Inspector Sharma',
+      designation: 'Police Patrol • Control 112',
+      phone: '112',
+      voicePitch: 0.8,
+      voiceRate: 0.98,
+      scriptPhrases: [
+        "This is Inspector Sharma from Central Dispatch. Your GPS coordinates are live on our map.",
+        "Our patrol unit is right on your sector road with beacon lights active.",
+        "If anyone is following, enter the nearest store. Our team is arriving in 60 seconds."
+      ],
+      suggestedReply: `"Yes Officer! I am waiting near the main junction under the CCTV camera!"`
+    },
+    brother: {
+      avatar: '👦',
+      name: 'Rohan (Brother)',
+      designation: 'Brother • Nearby',
+      phone: '+91 97654 32100',
+      voicePitch: 1.0,
+      voiceRate: 1.05,
+      scriptPhrases: [
+        "Hey! I parked the bike right near the pharmacy.",
+        "Hurry up, I'm waiting right here, wave when you see me."
+      ],
+      suggestedReply: `"Rohan! I see your bike, crossing over right now!"`
+    },
+    driver: {
+      avatar: '🚕',
+      name: 'Cab Driver (Suresh)',
+      designation: 'Uber / Ola Ride • DL 01 AB 8842',
+      phone: '+91 99887 66554',
+      voicePitch: 0.9,
+      voiceRate: 1.0,
+      scriptPhrases: [
+        "Madam, I have arrived at your pickup point, silver Swift Dzire.",
+        "Hazard lights are on, please come quickly and sit inside."
+      ],
+      suggestedReply: `"Yes bhaiya, I can see the silver car! Getting in right now!"`
+    }
+  }
+};
+
+let activeCallerProfile = MULTILINGUAL_PERSONAS.hi.mom;
+
+function setCallDelay(seconds, btnId) {
+  fakeCallSelectedDelay = seconds;
+  ['delay0', 'delay5', 'delay15'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('active', id === btnId);
+  });
+}
+
+function onFakeLanguageChange() {
+  const langEl = document.getElementById('fakeLanguageSelect');
+  if (langEl) fakeCallSelectedLang = langEl.value;
+  onFakePersonaChange();
+}
+
+function onFakePersonaChange() {
+  const lang = document.getElementById('fakeLanguageSelect') ? document.getElementById('fakeLanguageSelect').value : 'hi';
+  const sel = document.getElementById('fakePersonaSelect') ? document.getElementById('fakePersonaSelect').value : 'mom';
+  const customDiv = document.getElementById('customPersonaFields');
+  if (customDiv) {
+    customDiv.style.display = (sel === 'custom') ? 'block' : 'none';
+  }
+}
+
+function openFakeCallConfig() {
+  const modal = document.getElementById('fakeCallConfigModal');
+  if (modal) modal.classList.add('active');
+}
+
+function closeFakeCallConfig() {
+  const modal = document.getElementById('fakeCallConfigModal');
+  if (modal) modal.classList.remove('active');
+}
+
+function launchConfiguredFakeCall() {
+  closeFakeCallConfig();
+  const lang = document.getElementById('fakeLanguageSelect') ? document.getElementById('fakeLanguageSelect').value : 'hi';
+  const sel = document.getElementById('fakePersonaSelect') ? document.getElementById('fakePersonaSelect').value : 'mom';
+  
+  if (sel === 'custom') {
+    const name = (document.getElementById('customCallerName') && document.getElementById('customCallerName').value.trim()) || 'Friend';
+    const role = (document.getElementById('customCallerRole') && document.getElementById('customCallerRole').value.trim()) || 'Companion';
+    const phone = (document.getElementById('customCallerNumber') && document.getElementById('customCallerNumber').value.trim()) || '+91 98000 11223';
+    
+    activeCallerProfile = {
+      avatar: '👤',
+      name: name,
+      designation: role,
+      phone: phone,
+      rawLang: lang,
+      langCode: lang === 'hi' ? 'hi-IN' : (lang === 'mr' ? 'mr-IN' : (lang === 'ta' ? 'ta-IN' : (lang === 'te' ? 'te-IN' : (lang === 'bn' ? 'bn-IN' : (lang === 'gu' ? 'gu-IN' : 'en-IN'))))),
+      voicePitch: 1.0,
+      voiceRate: 0.9,
+      scriptPhrases: [
+        `Hey, I am right here waiting for you at the meeting point.`,
+        `Are you close? We are all gathered here, come inside quickly.`,
+        `I can see you from the window, wave when you cross the street.`,
+        `Stay on the call with me, let me know as soon as you reach.`
+      ],
+      suggestedReply: `"Yes, I'm right outside at the gate! Coming in right now!"`
+    };
+  } else {
+    const langPack = MULTILINGUAL_PERSONAS[lang] || MULTILINGUAL_PERSONAS.hi;
+    activeCallerProfile = { ...(langPack[sel] || langPack.mom || MULTILINGUAL_PERSONAS.hi.mom) };
+    activeCallerProfile.rawLang = lang;
+    activeCallerProfile.langCode = langPack.langCode || 'hi-IN';
+  }
+
+  if (fakeCallSelectedDelay > 0) {
+    appendMessage(`⏳ AI Fake Call from ${activeCallerProfile.name} scheduled in ${fakeCallSelectedDelay} seconds. Lock or hold your phone normally.`, 'bot');
+    clearTimeout(fakeCallScheduledTimer);
+    fakeCallScheduledTimer = setTimeout(() => {
+      triggerFakeCall(activeCallerProfile);
+    }, fakeCallSelectedDelay * 1000);
+  } else {
+    triggerFakeCall(activeCallerProfile);
+  }
+}
+
+function playRingtone() {
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+    ringAudioContext = new AudioContext();
+
+    function ringCycle() {
+      if (!ringAudioContext) return;
+      const osc1 = ringAudioContext.createOscillator();
+      const osc2 = ringAudioContext.createOscillator();
+      const gain = ringAudioContext.createGain();
+
+      osc1.frequency.value = 440;
+      osc2.frequency.value = 480;
+
+      gain.gain.setValueAtTime(0.2, ringAudioContext.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ringAudioContext.currentTime + 1.8);
+
+      osc1.connect(gain);
+      osc2.connect(gain);
+      gain.connect(ringAudioContext.destination);
+
+      osc1.start();
+      osc2.start();
+      osc1.stop(ringAudioContext.currentTime + 1.8);
+      osc2.stop(ringAudioContext.currentTime + 1.8);
+    }
+
+    ringCycle();
+    ringOscillator = setInterval(ringCycle, 3000);
+  } catch (e) {}
+}
+
+function stopRingtone() {
+  if (ringOscillator) clearInterval(ringOscillator);
+  if (ringAudioContext) {
+    ringAudioContext.close();
+    ringAudioContext = null;
+  }
+}
+
+function triggerFakeCall(profile = MULTILINGUAL_PERSONAS.hi.mom) {
+  activeCallerProfile = profile;
+  document.getElementById('fakeCallerAvatar').textContent = profile.avatar;
+  document.getElementById('fakeCallerName').textContent = profile.name;
+  document.getElementById('fakeCallerSubtitle').textContent = `${profile.designation} • ${profile.phone}`;
+  document.getElementById('fakeCallStatus').textContent = 'Incoming Call...';
+  document.getElementById('fakeCallStatus').style.color = '#22c55e';
+  
+  document.getElementById('fakeCallScript').style.display = 'none';
+  document.getElementById('callVoiceWave').style.display = 'none';
+  document.getElementById('fakeCallIncomingActions').style.display = 'flex';
+  document.getElementById('fakeCallConnectedActions').style.display = 'none';
+  document.getElementById('fakeCallOverlay').classList.add('active');
+
+  playRingtone();
+  if (navigator.vibrate) navigator.vibrate([400, 300, 400, 300, 800]);
+}
+
+// Global active audio player for high-fidelity regional streams
+let currentCallerAudio = null;
+let systemAudioVoices = [];
+
+function initVoiceEngine() {
+  if (!('speechSynthesis' in window)) return;
+  systemAudioVoices = window.speechSynthesis.getVoices();
+  if (window.speechSynthesis.onvoiceschanged !== undefined) {
+    window.speechSynthesis.onvoiceschanged = () => {
+      systemAudioVoices = window.speechSynthesis.getVoices();
+    };
+  }
+}
+initVoiceEngine();
+
+// Fallback browser speech synthesis if audio stream is unavailable
+function fallbackBrowserSpeech(text, pitch = 1.0, rate = 0.88, langCode = 'hi-IN') {
+  if (!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.rate = Math.max(0.78, Math.min(0.92, rate));
+  utterance.pitch = Math.max(0.85, Math.min(1.15, pitch));
+  utterance.lang = langCode || 'hi-IN';
+
+  const voices = systemAudioVoices.length > 0 ? systemAudioVoices : window.speechSynthesis.getVoices();
+  if (voices && voices.length > 0) {
+    const langPrefix = (langCode || 'hi').split('-')[0].toLowerCase();
+    let bestVoice = voices.find(v => v.lang.toLowerCase() === langCode.toLowerCase())
+      || voices.find(v => v.lang.toLowerCase().startsWith(langPrefix))
+      || voices.find(v => v.name.toLowerCase().includes(langPrefix))
+      || voices.find(v => v.lang.includes('IN') || v.lang.includes('hi'));
+    if (bestVoice) utterance.voice = bestVoice;
+  }
+
+  const wave = document.getElementById('callVoiceWave');
+  utterance.onstart = () => { if (wave) wave.style.display = 'flex'; };
+  utterance.onend = () => { if (wave) wave.style.display = 'none'; };
+  utterance.onerror = () => { if (wave) wave.style.display = 'none'; };
+
+  window.speechSynthesis.speak(utterance);
+}
+
+// Speak caller voice with authentic regional high-quality human audio
+function speakCallerAudio(text, pitch = 1.0, rate = 0.88, langCode = 'hi-IN', rawLang = 'hi') {
+  // Cancel previous stream or speech
+  if (currentCallerAudio) {
+    currentCallerAudio.pause();
+    currentCallerAudio.currentTime = 0;
+    currentCallerAudio = null;
+  }
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
+
+  const wave = document.getElementById('callVoiceWave');
+  const targetLang = rawLang || (langCode ? langCode.slice(0, 2) : 'hi');
+  const ttsUrl = `/api/tts?text=${encodeURIComponent(text)}&lang=${encodeURIComponent(targetLang)}`;
+
+  let startedPlaying = false;
+  try {
+    const audio = new Audio(ttsUrl);
+    currentCallerAudio = audio;
+    audio.playbackRate = 0.92; // natural human conversation pace
+
+    audio.onplay = () => {
+      startedPlaying = true;
+      if (wave) wave.style.display = 'flex';
+    };
+
+    audio.onended = () => {
+      if (wave) wave.style.display = 'none';
+      currentCallerAudio = null;
+    };
+
+    audio.onerror = () => {
+      if (!startedPlaying) {
+        fallbackBrowserSpeech(text, pitch, rate, langCode);
+      } else {
+        if (wave) wave.style.display = 'none';
+      }
+    };
+
+    const promise = audio.play();
+    if (promise !== undefined) {
+      promise.catch(() => {
+        fallbackBrowserSpeech(text, pitch, rate, langCode);
+      });
+    }
+  } catch (err) {
+    fallbackBrowserSpeech(text, pitch, rate, langCode);
+  }
+}
+
+function acceptFakeCall() {
+  stopRingtone();
+  document.getElementById('fakeCallStatus').textContent = '00:01 (Connected)';
+  document.getElementById('fakeCallStatus').style.color = '#38bdf8';
+  
+  const scriptEl = document.getElementById('fakeCallScript');
+  const lineEl = document.getElementById('fakeCallSuggestedLine');
+  if (scriptEl && lineEl) {
+    scriptEl.style.display = 'block';
+    lineEl.textContent = activeCallerProfile.suggestedReply || `"Yes! I am right outside, coming to you now!"`;
+  }
+
+  document.getElementById('fakeCallIncomingActions').style.display = 'none';
+  document.getElementById('fakeCallConnectedActions').style.display = 'flex';
+
+  // Speak initial caller sentence immediately in chosen mother tongue
+  let phraseIdx = 0;
+  const phrases = activeCallerProfile.scriptPhrases || [
+    "हाँ बेटा, कहाँ हो तुम? मैं गेट पर ही खड़ी हूँ।"
+  ];
+  const langCode = activeCallerProfile.langCode || 'hi-IN';
+  const rawLang = activeCallerProfile.rawLang || fakeCallSelectedLang || 'hi';
+
+  speakCallerAudio(phrases[0], activeCallerProfile.voicePitch, activeCallerProfile.voiceRate, langCode, rawLang);
+
+  // Periodic natural conversation loops
+  clearInterval(fakeCallAudioInterval);
+  fakeCallAudioInterval = setInterval(() => {
+    phraseIdx = (phraseIdx + 1) % phrases.length;
+    speakCallerAudio(phrases[phraseIdx], activeCallerProfile.voicePitch, activeCallerProfile.voiceRate, langCode, rawLang);
+  }, 6500);
+
+  let sec = 1;
+  clearInterval(fakeCallTimer);
+  fakeCallTimer = setInterval(() => {
+    sec++;
+    const m = String(Math.floor(sec / 60)).padStart(2, '0');
+    const s = String(sec % 60).padStart(2, '0');
+    document.getElementById('fakeCallStatus').textContent = `${m}:${s} (Connected)`;
+  }, 1000);
+}
+
+function endFakeCall() {
+  stopRingtone();
+  clearInterval(fakeCallTimer);
+  clearInterval(fakeCallAudioInterval);
+  if (currentCallerAudio) {
+    currentCallerAudio.pause();
+    currentCallerAudio.currentTime = 0;
+    currentCallerAudio = null;
+  }
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
+  const wave = document.getElementById('callVoiceWave');
+  if (wave) wave.style.display = 'none';
+  document.getElementById('fakeCallOverlay').classList.remove('active');
+}
+
+/* ══════════════════════════════════════════════════════════
+   6. GROUNDING & SIREN TOOLS
+   ══════════════════════════════════════════════════════════ */
+const groundingSteps = [
+  { num: "Step 1 of 5", title: "👁️ 5 Things You Can SEE", desc: "Look around you right now. Spot 5 distinct objects: a street lamp, shoes, trees, a door handle, or stars." },
+  { num: "Step 2 of 5", title: "✋ 4 Things You Can FEEL", desc: "Feel the texture of your clothes, the ground beneath your feet, cool air on your skin, or phone in hand." },
+  { num: "Step 3 of 5", title: "👂 3 Things You Can HEAR", desc: "Listen carefully. Notice distant traffic, wind rustling, footsteps, or your own breath." },
+  { num: "Step 4 of 5", title: "👃 2 Things You Can SMELL", desc: "Breathe in. Spot the scent of rain, street air, soap, perfume, or clean fabric." },
+  { num: "Step 5 of 5", title: "👅 1 Thing You Can TASTE", desc: "Notice the lingering taste of mint, tea, water, or take a refreshing sip of water." }
+];
+let currentGroundingIdx = 0;
+
+function nextGroundingStep(dir) {
+  currentGroundingIdx = (currentGroundingIdx + dir + groundingSteps.length) % groundingSteps.length;
+  const step = groundingSteps[currentGroundingIdx];
+  document.getElementById('groundingBadge').textContent = step.num;
+  document.getElementById('groundingTitle').textContent = step.title;
+  document.getElementById('groundingDesc').textContent = step.desc;
+}
+
+// Box breathing loop
+let breathState = 0;
+const breathCircle = document.getElementById('breathingCircle');
+const breathStatus = document.getElementById('breathingStatus');
+
+setInterval(() => {
+  if (breathState === 0) {
+    breathCircle.classList.add('expand');
+    breathStatus.textContent = "Inhale Deeply (4s)...";
+    breathState = 1;
+  } else if (breathState === 1) {
+    breathStatus.textContent = "Hold Breath (4s)...";
+    breathState = 2;
+  } else if (breathState === 2) {
+    breathCircle.classList.remove('expand');
+    breathStatus.textContent = "Exhale Slowly (4s)...";
+    breathState = 3;
+  } else {
+    breathStatus.textContent = "Hold Empty (4s)...";
+    breathState = 0;
+  }
+}, 4000);
+
+// High-frequency siren sound & strobe
+let isSirenPlaying = false;
+let sirenAudioCtx = null;
+let sirenOsc = null;
+
+function toggleSiren() {
+  const strobe = document.getElementById('strobeOverlay');
+  const btn = document.getElementById('sirenTriggerBtn');
+
+  if (isSirenPlaying) {
+    isSirenPlaying = false;
+    strobe.classList.remove('active');
+    btn.textContent = "🔊 BLAST LOUD SIREN & STROBE";
+    if (sirenAudioCtx) {
+      sirenAudioCtx.close();
+      sirenAudioCtx = null;
+    }
+    return;
+  }
+
+  isSirenPlaying = true;
+  strobe.classList.add('active');
+  btn.textContent = "🛑 STOP SIREN ALARM";
+
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    sirenAudioCtx = new AudioContext();
+    sirenOsc = sirenAudioCtx.createOscillator();
+    const gainNode = sirenAudioCtx.createGain();
+
+    sirenOsc.type = 'sawtooth';
+    sirenOsc.frequency.setValueAtTime(800, sirenAudioCtx.currentTime);
+
+    // Modulate frequency for loud wailing effect
+    let up = true;
+    setInterval(() => {
+      if (!sirenAudioCtx || !isSirenPlaying) return;
+      sirenOsc.frequency.linearRampToValueAtTime(up ? 1600 : 700, sirenAudioCtx.currentTime + 0.3);
+      up = !up;
+    }, 350);
+
+    gainNode.gain.setValueAtTime(0.7, sirenAudioCtx.currentTime);
+    sirenOsc.connect(gainNode);
+    gainNode.connect(sirenAudioCtx.destination);
+    sirenOsc.start();
+  } catch (e) {}
+}
+
+/* ══════════════════════════════════════════════════════════
+   7. STEALTH CALCULATOR DISGUISE & CAMOUFLAGE SOS
+   ══════════════════════════════════════════════════════════ */
+function toggleStealth(enable) {
+  document.getElementById('stealthOverlay').classList.toggle('active', enable);
+  if (enable) {
+    calcState = '0';
+    const disp = document.getElementById('calcDisplay');
+    if (disp) disp.textContent = '0';
+  }
+}
+
+let secretTapCount = 0;
+let secretTapTimer = null;
+function checkSecretUnlock(force = false) {
+  if (force) {
+    secretTapCount++;
+    clearTimeout(secretTapTimer);
+    secretTapTimer = setTimeout(() => { secretTapCount = 0; }, 1000);
+    if (secretTapCount >= 2) {
+      secretTapCount = 0;
+      toggleStealth(false);
+    }
+  }
+}
+
+let calcState = '0';
+function calcInput(char) {
+  const disp = document.getElementById('calcDisplay');
+  if (char === 'C') {
+    calcState = '0';
+  } else if (char === '=') {
+    // Secret Camouflage Emergency Trigger: 9999= (Silent SOS)
+    if (calcState === '9999') {
+      triggerSilentStealthSOS(false);
+      calcState = '9999';
+      if (disp) disp.textContent = calcState;
+      return;
+    }
+    // Secret Duress Code Trigger: 8888= (Duress Coercion SOS)
+    if (calcState === '8888') {
+      triggerSilentStealthSOS(true);
+      calcState = '8888';
+      if (disp) disp.textContent = calcState;
+      return;
+    }
+    // Secret Unlock Code: 0000=
+    if (calcState === '0000') {
+      toggleStealth(false);
+      calcState = '0';
+      if (disp) disp.textContent = '0';
+      return;
+    }
+
+    try {
+      calcState = String(eval(calcState.replace(/×/g, '*').replace(/÷/g, '/')));
+    } catch (e) {
+      calcState = 'Error';
+    }
+  } else {
+    if (calcState === '0' && !isNaN(char)) calcState = char;
+    else calcState += char;
+  }
+  if (disp) disp.textContent = calcState;
+}
+
+// Silent SOS trigger from stealth calculator
+function triggerSilentStealthSOS(isDuress = false) {
+  captureTelemetrySnapshot(isDuress ? 'DURESS SOS (Calculator 8888)' : 'SILENT SOS (Calculator 9999)');
+  
+  if (navigator.vibrate) navigator.vibrate([150, 100, 150]);
+
+  // Dispatch offline SMS beacon silently
+  if (trustedContacts.length > 0) {
+    const coordsStr = `${currentCoords.lat.toFixed(5)},${currentCoords.lng.toFixed(5)}`;
+    const mapsLink = `https://maps.google.com/?q=${coordsStr}`;
+    const prefix = isDuress ? '🚨 [DURESS ALERT - COERCION] ' : '🚨 [SILENT STEALTH SOS] ';
+    const smsBody = encodeURIComponent(`${prefix}I need immediate emergency assistance! Location: ${mapsLink} (Time: ${new Date().toLocaleTimeString()})`);
+    
+    // Open native SMS link silently
+    const numbers = trustedContacts.map(c => c.phone).join(',');
+    const smsUrl = `sms:${numbers}?body=${smsBody}`;
+    
+    const hiddenLink = document.createElement('a');
+    hiddenLink.href = smsUrl;
+    hiddenLink.style.display = 'none';
+    document.body.appendChild(hiddenLink);
+    hiddenLink.click();
+    setTimeout(() => hiddenLink.remove(), 1000);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   8. "WALK WITH ME" RIDE GUARD & INACTIVITY MONITOR
+   ══════════════════════════════════════════════════════════ */
+let rideGuardState = {
+  active: false,
+  mode: 'cab',
+  durationMins: 15,
+  remainingSecs: 900,
+  timerInterval: null,
+  checkinInterval: null,
+  loggedPlate: ''
+};
+
+function setRideMode(mode, btn) {
+  rideGuardState.mode = mode;
+  ['rideModeCab', 'rideModeWalk', 'rideModeBus'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('active');
+  });
+  if (btn) btn.classList.add('active');
+}
+
+function setRideDuration(mins, btn) {
+  rideGuardState.durationMins = mins;
+  ['dur15', 'dur30', 'dur45', 'dur60'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('active');
+  });
+  if (btn) btn.classList.add('active');
+}
+
+function startRideGuard() {
+  rideGuardState.active = true;
+  rideGuardState.remainingSecs = rideGuardState.durationMins * 60;
+
+  document.getElementById('rideGuardInactiveState').style.display = 'none';
+  document.getElementById('rideGuardActiveState').style.display = 'block';
+
+  const modeTitles = {
+    cab: '🚕 Cab / Auto Journey Active',
+    walk: '🚶‍♀️ Night Walk Escort Active',
+    bus: '🚌 Public Transit Escort Active'
+  };
+  document.getElementById('rideActiveModeTitle').textContent = modeTitles[rideGuardState.mode] || '🛡️ Journey Active';
+
+  updateRideTimerDisplay();
+  
+  clearInterval(rideGuardState.timerInterval);
+  rideGuardState.timerInterval = setInterval(() => {
+    rideGuardState.remainingSecs--;
+    updateRideTimerDisplay();
+
+    if (rideGuardState.remainingSecs <= 0) {
+      clearInterval(rideGuardState.timerInterval);
+      triggerRideExpiryWarning();
+    }
+  }, 1000);
+
+  // Periodic Check-In reminder every 4 minutes (or 45s for quick verification)
+  clearInterval(rideGuardState.checkinInterval);
+  rideGuardState.checkinInterval = setInterval(() => {
+    promptRideSafetyCheckin();
+  }, 240000);
+
+  appendMessage(`🛡️ "Walk With Me" journey escort activated for ${rideGuardState.durationMins} minutes (${rideGuardState.mode.toUpperCase()}). I am monitoring your travel pace and safety heartbeat.`, 'bot');
+}
+
+function updateRideTimerDisplay() {
+  const m = Math.floor(Math.max(0, rideGuardState.remainingSecs) / 60);
+  const s = Math.max(0, rideGuardState.remainingSecs) % 60;
+  const disp = document.getElementById('rideTimerCountdown');
+  if (disp) {
+    disp.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  }
+}
+
+function promptRideSafetyCheckin() {
+  const card = document.getElementById('rideGuardActiveCard');
+  if (card) card.classList.add('warning');
+  
+  const statusText = document.getElementById('rideGuardStatusText');
+  if (statusText) statusText.textContent = '⚠️ Check-in required: Tap "I Am Safe" within 60s';
+
+  if (navigator.vibrate) navigator.vibrate([300, 200, 300]);
+  
+  // Play subtle warning chime
+  playCheckinBeep();
+
+  // If unconfirmed for 60s, automatically escalate to SOS!
+  setTimeout(() => {
+    if (rideGuardState.active && card && card.classList.contains('warning')) {
+      startSOSCountdown('Ride Inactivity Escalation');
+    }
+  }, 60000);
+}
+
+function playCheckinBeep() {
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return;
+    const ctx = new AudioContext();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.frequency.value = 587.33; // D5 note
+    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.5);
+  } catch (e) {}
+}
+
+function confirmRideCheckin() {
+  const card = document.getElementById('rideGuardActiveCard');
+  if (card) card.classList.remove('warning');
+  const statusText = document.getElementById('rideGuardStatusText');
+  if (statusText) statusText.textContent = '✅ Safety confirmed • Next check-in in 4 mins';
+  captureTelemetrySnapshot('Ride Guard Check-in Confirmed');
+}
+
+function shareLiveRideGPS() {
+  const coordsStr = `${currentCoords.lat.toFixed(5)},${currentCoords.lng.toFixed(5)}`;
+  const mapsLink = `https://maps.google.com/?q=${coordsStr}`;
+  const plateInfo = rideGuardState.loggedPlate ? ` Vehicle Plate: ${rideGuardState.loggedPlate}.` : '';
+  const body = encodeURIComponent(`📍 Sakhi Walk-With-Me live tracking: I am travelling via ${rideGuardState.mode.toUpperCase()}.${plateInfo} Live Map: ${mapsLink}`);
+  
+  const numbers = trustedContacts.map(c => c.phone).join(',');
+  window.open(`sms:${numbers}?body=${body}`, '_blank');
+}
+
+function finishRideGuard(arrivedSafely = true) {
+  clearInterval(rideGuardState.timerInterval);
+  clearInterval(rideGuardState.checkinInterval);
+  rideGuardState.active = false;
+
+  document.getElementById('rideGuardInactiveState').style.display = 'block';
+  document.getElementById('rideGuardActiveState').style.display = 'none';
+
+  if (arrivedSafely) {
+    appendMessage(`🏠 Journey completed! Glad you arrived safely.`, 'bot');
+    
+    // Optional safe arrival message
+    if (trustedContacts.length > 0) {
+      const numbers = trustedContacts.map(c => c.phone).join(',');
+      const body = encodeURIComponent(`🏠 I have safely arrived at my destination! Thank you.`);
+      const link = document.createElement('a');
+      link.href = `sms:${numbers}?body=${body}`;
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(() => link.remove(), 1000);
+    }
+  }
+}
+
+function triggerRideExpiryWarning() {
+  const statusText = document.getElementById('rideGuardStatusText');
+  if (statusText) statusText.textContent = '🚨 Trip time expired! Please confirm if you have reached safely.';
+  promptRideSafetyCheckin();
+}
+
+function logVehiclePlate() {
+  const input = document.getElementById('cabPlateInput');
+  const val = input ? input.value.trim().toUpperCase() : '';
+  if (!val) {
+    alert("Please enter a vehicle plate number (e.g. DL 01 AB 1234).");
+    return;
+  }
+  rideGuardState.loggedPlate = val;
+  captureTelemetrySnapshot(`Vehicle Plate Logged: ${val}`);
+  input.value = '';
+  alert(`✅ Vehicle plate "${val}" logged to Evidence Vault with GPS & timestamp.`);
+}
+
+/* ══════════════════════════════════════════════════════════
+   9. EMERGENCY EVIDENCE BLACKBOX (AUDIO & TELEMETRY VAULT)
+   ══════════════════════════════════════════════════════════ */
+const STORAGE_KEY_EVIDENCE = 'sakhi_evidence_vault_v2';
+let evidenceVault = JSON.parse(localStorage.getItem(STORAGE_KEY_EVIDENCE) || '[]');
+
+let mediaRecorderInstance = null;
+let audioRecordedChunks = [];
+let blackboxTimerInterval = null;
+let blackboxSeconds = 0;
+
+async function startBlackboxRecording() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    audioRecordedChunks = [];
+    mediaRecorderInstance = new MediaRecorder(stream);
+
+    mediaRecorderInstance.ondataavailable = (e) => {
+      if (e.data.size > 0) audioRecordedChunks.push(e.data);
+    };
+
+    mediaRecorderInstance.onstop = () => {
+      const audioBlob = new Blob(audioRecordedChunks, { type: 'audio/webm' });
+      const reader = new FileReader();
+      reader.readAsDataURL(audioBlob);
+      reader.onloadend = () => {
+        const base64Audio = reader.result;
+        saveEvidenceItem({
+          id: 'ev-' + Date.now(),
+          type: 'audio',
+          title: `Audio Recording (${blackboxSeconds}s)`,
+          timestamp: new Date().toLocaleString(),
+          audioData: base64Audio,
+          coords: { ...currentCoords },
+          battery: batteryStatusCache || 'N/A'
+        });
+      };
+      stream.getTracks().forEach(track => track.stop());
+    };
+
+    mediaRecorderInstance.start();
+    blackboxSeconds = 0;
+    document.getElementById('blackboxLiveBanner').style.display = 'flex';
+    document.getElementById('startRecBtn').style.display = 'none';
+
+    clearInterval(blackboxTimerInterval);
+    blackboxTimerInterval = setInterval(() => {
+      blackboxSeconds++;
+      const m = String(Math.floor(blackboxSeconds / 60)).padStart(2, '0');
+      const s = String(blackboxSeconds % 60).padStart(2, '0');
+      const timerEl = document.getElementById('blackboxTimer');
+      if (timerEl) timerEl.textContent = `${m}:${s}`;
+
+      // Auto-stop at 30 seconds to conserve memory
+      if (blackboxSeconds >= 30) {
+        stopBlackboxRecording();
+      }
+    }, 1000);
+  } catch (err) {
+    alert("Microphone access is required for Emergency Audio Blackbox: " + err.message);
+  }
+}
+
+function stopBlackboxRecording() {
+  clearInterval(blackboxTimerInterval);
+  if (mediaRecorderInstance && mediaRecorderInstance.state !== 'inactive') {
+    mediaRecorderInstance.stop();
+  }
+  document.getElementById('blackboxLiveBanner').style.display = 'none';
+  document.getElementById('startRecBtn').style.display = 'inline-block';
+}
+
+let batteryStatusCache = '100%';
+if (navigator.getBattery) {
+  navigator.getBattery().then(b => {
+    batteryStatusCache = `${Math.round(b.level * 100)}% (${b.charging ? 'Charging' : 'Battery'})`;
+  }).catch(() => {});
+}
+
+function captureTelemetrySnapshot(customTitle = 'GPS & Sensor Snapshot') {
+  const item = {
+    id: 'ev-' + Date.now(),
+    type: 'snapshot',
+    title: customTitle,
+    timestamp: new Date().toLocaleString(),
+    coords: { ...currentCoords },
+    battery: batteryStatusCache,
+    network: navigator.onLine ? 'Online (Cellular/WiFi)' : 'Offline (GSM Only)'
+  };
+  saveEvidenceItem(item);
+}
+
+function saveEvidenceItem(item) {
+  evidenceVault.unshift(item);
+  if (evidenceVault.length > 25) evidenceVault.pop();
+  localStorage.setItem(STORAGE_KEY_EVIDENCE, JSON.stringify(evidenceVault));
+  renderEvidenceVault();
+}
+
+function deleteEvidenceItem(id) {
+  evidenceVault = evidenceVault.filter(i => i.id !== id);
+  localStorage.setItem(STORAGE_KEY_EVIDENCE, JSON.stringify(evidenceVault));
+  renderEvidenceVault();
+}
+
+function renderEvidenceVault() {
+  const container = document.getElementById('evidenceVaultList');
+  if (!container) return;
+
+  if (evidenceVault.length === 0) {
+    container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 14px; font-size: 12px;">No evidence snapshots logged yet. Tap Record or Snapshot to create an immutable log.</div>`;
+    return;
+  }
+
+  container.innerHTML = evidenceVault.map(ev => {
+    const latLng = `${ev.coords.lat.toFixed(5)}, ${ev.coords.lng.toFixed(5)}`;
+    const mapsUrl = `https://maps.google.com/?q=${ev.coords.lat},${ev.coords.lng}`;
+    return `
+      <div class="evidence-item-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <strong style="font-size: 13px; color: #f8fafc;">${ev.type === 'audio' ? '🎙️ ' : '📸 '}${ev.title}</strong>
+          <button style="background: none; border: none; color: #ef4444; font-size: 12px; cursor: pointer;" onclick="deleteEvidenceItem('${ev.id}')">✕ Delete</button>
+        </div>
+        <div style="font-size: 11.5px; color: #94a3b8;">
+          🕒 ${ev.timestamp} • 📍 <a href="${mapsUrl}" target="_blank" style="color: #38bdf8;">${latLng}</a> • 🔋 ${ev.battery || 'N/A'}
+        </div>
+        ${ev.audioData ? `
+          <audio controls src="${ev.audioData}" style="width: 100%; height: 32px; margin-top: 4px;"></audio>
+        ` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+/* ══════════════════════════════════════════════════════════
+   10. INSTANT ZERO FIR & LEGAL INCIDENT DRAFTER
+   ══════════════════════════════════════════════════════════ */
+let lastGeneratedFIRText = '';
+
+function generateZeroFIR() {
+  const type = document.getElementById('firIncidentType').value;
+  const name = document.getElementById('firVictimName').value.trim() || 'Victim / Aggrieved Person';
+  const phone = document.getElementById('firVictimPhone').value.trim() || 'Provided on Record';
+  const suspect = document.getElementById('firSuspectDesc').value.trim() || 'Unknown individual(s)';
+  const statement = document.getElementById('firStatement').value.trim() || 'The complainant was subjected to unlawful harassment and intimidation as detailed in this submission.';
+  
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+  const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+  const gpsStr = `${currentCoords.lat.toFixed(5)}° N, ${currentCoords.lng.toFixed(5)}° E`;
+
+  lastGeneratedFIRText = `FORMAL COMPLAINT FOR REGISTRATION OF ZERO FIRST INFORMATION REPORT (ZERO FIR)
+(Under Section 154 Code of Criminal Procedure, 1973 / Bharatiya Nyaya Sanhita, 2023)
+
+TO:
+The Station House Officer (SHO) / Officer-in-Charge
+Police Station: Any Jurisdictional Police Station
+Subject: Urgent Complaint Regarding ${type}
+
+1. COMPLAINANT PARTICULARS:
+   • Full Name: ${name}
+   • Contact Telephone: ${phone}
+   • Date & Time of Incident: ${dateStr} at approx. ${timeStr}
+   • Location / GPS Coordinates: ${gpsStr} (Map: https://maps.google.com/?q=${currentCoords.lat},${currentCoords.lng})
+
+2. ACCUSED / SUSPECT DETAILS:
+   • Identity / Vehicle Details: ${suspect}
+
+3. INCIDENT CLASSIFICATION & STATUTORY CITATIONS:
+   • Nature of Offence: ${type}
+   • Applicable Provisions:
+     - Section 154 CrPC (Mandatory Registration of Zero FIR irrespective of territorial jurisdiction)
+     - BNS Section 78 (Stalking) / Section 75 (Sexual Harassment) / Section 85 (Domestic Harassment)
+     - Section 46(4) CrPC (Statutory safeguards regarding female presence and sunset arrest protections)
+
+4. STATEMENT OF FACTS / DETAILED NARRATIVE:
+   "${statement}"
+
+5. PRAYER & RELIEF SOUGHT:
+   It is respectfully prayed that:
+   a) A Zero FIR be registered immediately and a copy furnished to the complainant free of cost.
+   b) Urgent police protection and patrol escort be deployed at the incident vicinity.
+   c) Transfer of investigation files to the concerned jurisdictional police station be expedited in accordance with law.
+
+VERIFICATION:
+I, ${name}, verify that the contents stated above are true and correct to the best of my knowledge.
+
+Date: ${dateStr}
+Digital Timestamp: ${now.toISOString()}
+Signed: ${name}`;
+
+  document.getElementById('firPreviewBox').textContent = lastGeneratedFIRText;
+  document.getElementById('firResultContainer').style.display = 'block';
+  captureTelemetrySnapshot(`Zero FIR Generated: ${type}`);
+}
+
+function copyFIRText() {
+  if (!lastGeneratedFIRText) return;
+  navigator.clipboard.writeText(lastGeneratedFIRText).then(() => {
+    alert("✅ Zero FIR draft copied to clipboard!");
+  }).catch(() => {
+    alert("Could not auto-copy. Please select and copy text manually.");
+  });
+}
+
+function downloadFIRText() {
+  if (!lastGeneratedFIRText) return;
+  const blob = new Blob([lastGeneratedFIRText], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `ZERO_FIR_COMPLAINT_${Date.now()}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { a.remove(); URL.revokeObjectURL(url); }, 1000);
+}
+
+function emailFIRNCW() {
+  if (!lastGeneratedFIRText) return;
+  const subject = encodeURIComponent(`URGENT: Legal Complaint & Zero FIR - ${document.getElementById('firIncidentType').value}`);
+  const body = encodeURIComponent(lastGeneratedFIRText);
+  window.open(`mailto:ncw@nic.in?subject=${subject}&body=${body}`, '_blank');
+}
+
+/* ══════════════════════════════════════════════════════════
+   11. CPR METRONOME (110 BPM) & DISTRESS WHISTLE
+   ══════════════════════════════════════════════════════════ */
+let isCprRunning = false;
+let cprInterval = null;
+let cprBeatsCount = 0;
+let cprAudioCtx = null;
+
+function toggleCPRMetronome() {
+  const circle = document.getElementById('cprCircle');
+  const btnText = document.getElementById('cprBtnText');
+  const counterText = document.getElementById('cprCounterText');
+
+  if (isCprRunning) {
+    isCprRunning = false;
+    clearInterval(cprInterval);
+    if (btnText) btnText.innerHTML = "START<br>CPR";
+    if (circle) circle.classList.remove('beat');
+    if (cprAudioCtx) { cprAudioCtx.close(); cprAudioCtx = null; }
+    return;
+  }
+
+  isCprRunning = true;
+  cprBeatsCount = 0;
+  if (btnText) btnText.innerHTML = "STOP<br>CPR";
+
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    cprAudioCtx = new AudioContext();
+  } catch (e) {}
+
+  // 110 BPM = approx 545ms per beat
+  cprInterval = setInterval(() => {
+    cprBeatsCount++;
+    if (circle) {
+      circle.classList.add('beat');
+      setTimeout(() => circle.classList.remove('beat'), 120);
+    }
+
+    const compNum = ((cprBeatsCount - 1) % 30) + 1;
+    if (counterText) {
+      if (compNum === 30) {
+        counterText.textContent = `🚨 30 DONE! Give 2 Rescue Breaths`;
+      } else {
+        counterText.textContent = `Compressions: ${compNum} / 30`;
+      }
+    }
+
+    playCPRClick(cprAudioCtx, compNum === 30 ? 880 : 587);
+  }, 545);
+}
+
+function playCPRClick(ctx, freq = 587) {
+  if (!ctx) return;
+  try {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.08);
+  } catch (e) {}
+}
+
+let isWhistleRunning = false;
+let whistleAudioCtx = null;
+let whistleOsc = null;
+
+function toggleDistressWhistle() {
+  const btn = document.getElementById('whistleBtn');
+  if (isWhistleRunning) {
+    isWhistleRunning = false;
+    if (btn) btn.textContent = "🔊 High-Pitch Distress Whistle";
+    if (whistleAudioCtx) {
+      whistleAudioCtx.close();
+      whistleAudioCtx = null;
+    }
+    return;
+  }
+
+  isWhistleRunning = true;
+  if (btn) btn.textContent = "🛑 Stop Distress Whistle";
+
+  try {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    whistleAudioCtx = new AudioContext();
+    whistleOsc = whistleAudioCtx.createOscillator();
+    const gain = whistleAudioCtx.createGain();
+
+    whistleOsc.type = 'triangle';
+    whistleOsc.frequency.setValueAtTime(3200, whistleAudioCtx.currentTime);
+
+    // Oscillate between 3000 Hz and 3600 Hz (piercing whistle)
+    let flip = true;
+    setInterval(() => {
+      if (!whistleAudioCtx || !isWhistleRunning) return;
+      whistleOsc.frequency.linearRampToValueAtTime(flip ? 3600 : 3000, whistleAudioCtx.currentTime + 0.15);
+      flip = !flip;
+    }, 200);
+
+    gain.gain.setValueAtTime(0.7, whistleAudioCtx.currentTime);
+    whistleOsc.connect(gain);
+    gain.connect(whistleAudioCtx.destination);
+    whistleOsc.start();
+  } catch (e) {}
+}
+
+// Initial setup
+renderContactsList();
+renderEvidenceVault();
+document.getElementById('customSosMsg').value = customSosMessage;
+</script>
+
+</body>
+</html>
