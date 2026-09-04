@@ -1,0 +1,1902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Sally 💛</title>
+
+<!-- Markdown renderer -->
+<script src="https://cdn.jsdelivr.net/npm/marked@15.0.12/marked.min.js"></script>
+
+<!-- HTML sanitizer -->
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html,body{
+  height:100%;
+  font-family:"Segoe UI",sans-serif;
+  background:#111b21;
+  overflow:hidden;
+}
+
+.chat-container{
+  height:100dvh;
+  display:flex;
+  flex-direction:column;
+  background:#0b141a;
+}
+
+/* ================= HEADER ================= */
+
+.chat-header{
+  height:60px;
+  background:#202c33;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 14px;
+  color:white;
+  border-bottom:1px solid #2f3b43;
+  flex-shrink:0;
+}
+
+.profile{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.profile img{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  object-fit:cover;
+}
+
+.profile-info{
+  display:flex;
+  flex-direction:column;
+}
+
+.profile-info span{
+  font-size:17px;
+}
+
+.profile-info small{
+  font-size:12px;
+  color:#8696a0;
+}
+
+.reset-btn{
+  background:none;
+  border:none;
+  color:#8696a0;
+  font-size:14px;
+  cursor:pointer;
+}
+
+/* ================= MESSAGES ================= */
+
+.messages{
+  flex:1;
+  overflow-y:auto;
+  padding:12px;
+
+  display:flex;
+  flex-direction:column;
+
+  background:
+    linear-gradient(
+      rgba(11,20,26,0.82),
+      rgba(11,20,26,0.82)
+    ),
+    url("https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop");
+
+  background-size:cover;
+  background-position:center;
+
+  scroll-behavior:smooth;
+}
+
+.message{
+  max-width:85%;
+  padding:9px 11px;
+  margin-bottom:10px;
+  border-radius:8px;
+
+  line-height:1.5;
+  font-size:14px;
+
+  word-wrap:break-word;
+  overflow-wrap:anywhere;
+
+  animation:fadeIn .15s ease;
+}
+
+@keyframes fadeIn{
+  from{
+    opacity:0;
+    transform:translateY(5px);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+.user{
+  align-self:flex-end;
+  background:#005c4b;
+  color:#e9edef;
+  border-top-right-radius:2px;
+}
+
+.bot{
+  align-self:flex-start;
+  background:#202c33;
+  color:#e9edef;
+  border-top-left-radius:2px;
+}
+
+/* ================= MARKDOWN ================= */
+
+.markdown-content{
+  line-height:1.5;
+  width:100%;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4,
+.markdown-content h5,
+.markdown-content h6{
+  margin:8px 0;
+  line-height:1.3;
+}
+
+.markdown-content h1{ font-size:20px; }
+.markdown-content h2{ font-size:18px; }
+.markdown-content h3{ font-size:16px; }
+.markdown-content h4{ font-size:15px; }
+.markdown-content h5{ font-size:14px; }
+.markdown-content h6{ font-size:13px; }
+
+.markdown-content p{
+  margin:6px 0;
+}
+
+.markdown-content p:first-child{
+  margin-top:0;
+}
+
+.markdown-content p:last-child{
+  margin-bottom:0;
+}
+
+.markdown-content strong{
+  font-weight:700;
+  color:#ffffff;
+}
+
+.markdown-content em{
+  font-style:italic;
+}
+
+.markdown-content del{
+  text-decoration:line-through;
+}
+
+.markdown-content ul,
+.markdown-content ol{
+  margin:6px 0 6px 22px;
+  padding:0;
+}
+
+.markdown-content li{
+  margin:3px 0;
+}
+
+.markdown-content li > ul,
+.markdown-content li > ol{
+  margin-top:2px;
+  margin-bottom:2px;
+}
+
+.markdown-content blockquote{
+  border-left:3px solid #00a884;
+  padding-left:10px;
+  margin:8px 0;
+  color:#c8d1d5;
+}
+
+.markdown-content hr{
+  border:none;
+  border-top:1px solid #40505a;
+  margin:10px 0;
+}
+
+.markdown-content a{
+  color:#53bdeb;
+  text-decoration:underline;
+}
+
+.markdown-content code{
+  background:rgba(0,0,0,0.28);
+  padding:2px 5px;
+  border-radius:4px;
+  font-family:monospace;
+  font-size:13px;
+}
+
+.markdown-content pre{
+  background:#111b21;
+  padding:10px;
+  margin:8px 0;
+  border-radius:7px;
+  overflow-x:auto;
+  white-space:pre;
+}
+
+.markdown-content pre code{
+  background:none;
+  padding:0;
+  font-size:12px;
+}
+
+.markdown-content .table-wrapper{
+  width:100%;
+  max-width:100%;
+  overflow-x:auto;
+  margin:8px 0;
+  border-radius:6px;
+}
+
+.markdown-content table{
+  border-collapse:collapse;
+  width:100%;
+  min-width:300px;
+  font-size:12px;
+}
+
+.markdown-content th,
+.markdown-content td{
+  border:1px solid #40505a;
+  padding:6px 8px;
+  text-align:left;
+  vertical-align:top;
+}
+
+.markdown-content th{
+  background:#26343c;
+  font-weight:700;
+}
+
+.markdown-content tr:nth-child(even){
+  background:rgba(255,255,255,0.025);
+}
+
+.markdown-content img{
+  max-width:100%;
+  border-radius:8px;
+  margin:5px 0;
+}
+
+/* ================= TIME ================= */
+
+.time{
+  display:block;
+  text-align:right;
+  font-size:10px;
+  opacity:0.7;
+  margin-top:5px;
+}
+
+/* ================= CHAT IMAGE ================= */
+
+.chat-image{
+  max-width:220px;
+  max-height:300px;
+  border-radius:10px;
+  display:block;
+  margin-top:2px;
+  cursor:pointer;
+  object-fit:cover;
+  transition:opacity 0.15s;
+}
+
+.chat-image:active{
+  opacity:0.8;
+}
+
+/* ================= TYPING ================= */
+
+.typing{
+  font-size:22px;
+  letter-spacing:2px;
+  opacity:0.7;
+}
+
+/* ================= IMAGE PREVIEW ================= */
+
+#imagePreviewStrip{
+  display:none;
+  background:#1a2530;
+  padding:8px 12px;
+  align-items:center;
+  gap:10px;
+  flex-shrink:0;
+}
+
+#imagePreviewStrip img{
+  height:60px;
+  width:60px;
+  object-fit:cover;
+  border-radius:8px;
+}
+
+#imagePreviewStrip span{
+  color:#8696a0;
+  font-size:12px;
+  flex:1;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+#removeImageBtn{
+  background:none;
+  border:none;
+  color:#e9edef;
+  font-size:18px;
+  cursor:pointer;
+  padding:4px;
+}
+
+/* ================= INPUT ================= */
+
+.input-area{
+  background:#202c33;
+  padding:10px;
+
+  display:flex;
+  align-items:flex-end;
+  gap:8px;
+
+  flex-shrink:0;
+}
+
+.image-btn{
+  width:46px;
+  height:46px;
+  border-radius:50%;
+
+  background:#2a3942;
+  color:white;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:18px;
+  cursor:pointer;
+
+  flex-shrink:0;
+  position:relative;
+}
+
+.image-btn .badge{
+  display:none;
+
+  position:absolute;
+  top:2px;
+  right:2px;
+
+  width:10px;
+  height:10px;
+
+  background:#00a884;
+  border-radius:50%;
+}
+
+textarea{
+  flex:1;
+
+  border:none;
+  outline:none;
+  resize:none;
+
+  background:#2a3942;
+  color:white;
+
+  border-radius:24px;
+
+  padding:12px 16px;
+
+  font-size:14px;
+  font-family:inherit;
+
+  min-height:45px;
+  max-height:120px;
+
+  overflow-y:auto;
+}
+
+textarea::placeholder{
+  color:#8696a0;
+}
+
+.send-btn{
+  width:46px;
+  height:46px;
+
+  border:none;
+  border-radius:50%;
+
+  background:#00a884;
+  color:white;
+
+  font-size:18px;
+  cursor:pointer;
+
+  transition:background 0.2s;
+}
+
+.send-btn:active{
+  background:#008f71;
+}
+
+.send-btn:disabled{
+  opacity:0.5;
+}
+
+/* ================= FULLSCREEN IMAGE VIEWER ================= */
+
+#imgViewer{
+  display:none;
+
+  position:fixed;
+  inset:0;
+
+  background:rgba(0,0,0,0.95);
+
+  z-index:999;
+
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+
+#imgViewer.active{
+  display:flex;
+}
+
+#imgViewer img{
+  max-width:95vw;
+  max-height:85vh;
+
+  border-radius:8px;
+  object-fit:contain;
+}
+
+#imgViewerClose{
+  position:absolute;
+
+  top:16px;
+  right:16px;
+
+  background:rgba(255,255,255,0.15);
+
+  border:none;
+  color:white;
+
+  font-size:22px;
+
+  width:40px;
+  height:40px;
+
+  border-radius:50%;
+
+  cursor:pointer;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* ================= ERROR ================= */
+
+.error-message{
+  color:#ffb4ab;
+}
+</style>
+</head>
+
+<body>
+
+<div class="chat-container">
+
+  <!-- HEADER -->
+
+  <div class="chat-header">
+
+    <div class="profile">
+
+      <img
+        src="https://cdn-icons-png.flaticon.com/512/6997/6997662.png"
+        alt="Sally"
+      >
+
+      <div class="profile-info">
+        <span>Sally 💛</span>
+        <small id="statusText">online</small>
+      </div>
+
+    </div>
+
+    <button class="reset-btn" onclick="clearMemory()">
+      Reset
+    </button>
+
+  </div>
+
+
+  <!-- CHAT -->
+
+  <div class="messages" id="messages"></div>
+
+
+  <!-- IMAGE PREVIEW -->
+
+  <div id="imagePreviewStrip">
+
+    <img id="previewThumb" alt="Attached image">
+
+    <span id="previewLabel">
+      Image attached — ask Sally about it
+    </span>
+
+    <button
+      id="removeImageBtn"
+      onclick="removeImage()"
+      type="button"
+    >
+      ✕
+    </button>
+
+  </div>
+
+
+  <!-- INPUT -->
+
+  <div class="input-area">
+
+    <label class="image-btn" id="imageLabel">
+
+      📎
+
+      <span class="badge" id="attachBadge"></span>
+
+      <input
+        type="file"
+        id="imageInput"
+        accept="image/*"
+        hidden
+      >
+
+    </label>
+
+    <textarea
+      id="userInput"
+      rows="1"
+      placeholder="Message Sally..."
+    ></textarea>
+
+    <button
+      class="send-btn"
+      id="sendBtn"
+      onclick="sendMessage()"
+      type="button"
+    >
+      ➤
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- FULLSCREEN IMAGE VIEWER -->
+
+<div id="imgViewer">
+
+  <button
+    id="imgViewerClose"
+    onclick="closeViewer()"
+    type="button"
+  >
+    ✕
+  </button>
+
+  <img id="imgViewerImg" src="" alt="Full image">
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   CONFIG
+   ========================================================= */
+
+/*
+   IMPORTANT:
+   No API key is stored in this HTML.
+
+   Sally talks to your Cloudflare Worker.
+   The Worker talks to OpenRouter.
+
+   Worker:
+   https://mistral-proxy.mraayanshaikh37.workers.dev
+*/
+
+const API_URL =
+  "https://mistral-proxy.mraayanshaikh37.workers.dev";
+
+
+/*
+   OpenRouter model
+*/
+
+const MODEL =
+  "minimax/minimax-m3:free";
+
+
+/* =========================================================
+   ELEMENTS
+   ========================================================= */
+
+const messagesDiv =
+  document.getElementById("messages");
+
+const userInput =
+  document.getElementById("userInput");
+
+const statusText =
+  document.getElementById("statusText");
+
+const imageInput =
+  document.getElementById("imageInput");
+
+const previewStrip =
+  document.getElementById("imagePreviewStrip");
+
+const previewThumb =
+  document.getElementById("previewThumb");
+
+const previewLabel =
+  document.getElementById("previewLabel");
+
+const attachBadge =
+  document.getElementById("attachBadge");
+
+const sendBtn =
+  document.getElementById("sendBtn");
+
+
+/* =========================================================
+   IMAGE STATE
+   ========================================================= */
+
+let pendingImageBase64 = null;
+let pendingImageType = null;
+let pendingImageURL = null;
+
+
+/* =========================================================
+   SALLY SYSTEM PROMPT
+   ========================================================= */
+
+const defaultConversation = [
+
+  {
+    role:"system",
+
+    content:`
+You are Sally.
+
+You are emotionally warm, calm, natural, and realistic.
+
+Speak naturally like a real conversational companion.
+
+Avoid robotic replies.
+
+Be emotionally intelligent.
+
+Keep normal replies concise but meaningful.
+
+Do not unnecessarily use huge walls of text.
+
+When explaining something complicated, use Markdown formatting when helpful.
+
+You may use:
+
+- headings
+- **bold**
+- *italics*
+- bullet lists
+- numbered lists
+- tables
+- code blocks
+
+IMPORTANT MARKDOWN RULES:
+
+Use real Markdown syntax when formatting is useful.
+
+For example:
+
+# Heading
+
+**Bold text**
+
+*Italic text*
+
+- Bullet point
+
+1. Numbered point
+
+| Item | Value |
+|------|-------|
+| A | 10 |
+| B | 20 |
+
+When shown an image, describe and react to it naturally.
+
+Do not claim to have capabilities you do not have.
+`
+  }
+
+];
+
+
+/* =========================================================
+   MEMORY
+   ========================================================= */
+
+const savedConversation =
+  localStorage.getItem("sally_memory");
+
+let conversation;
+
+try{
+
+  conversation = savedConversation
+    ? JSON.parse(savedConversation)
+    : [...defaultConversation];
+
+  /*
+     Safety check:
+     If old/broken memory does not contain a system
+     message, restore the current system prompt.
+  */
+
+  if(
+    !Array.isArray(conversation) ||
+    !conversation.some(
+      msg => msg.role === "system"
+    )
+  ){
+
+    conversation = [...defaultConversation];
+
+  }
+
+}catch(error){
+
+  console.error(
+    "Memory could not be loaded:",
+    error
+  );
+
+  conversation = [...defaultConversation];
+
+}
+
+
+/* =========================================================
+   TIME
+   ========================================================= */
+
+function getTime(){
+
+  return new Date().toLocaleTimeString(
+    [],
+    {
+      hour:"2-digit",
+      minute:"2-digit"
+    }
+  );
+
+}
+
+
+/* =========================================================
+   SAVE MEMORY
+   ========================================================= */
+
+function saveMemory(){
+
+  try{
+
+    localStorage.setItem(
+      "sally_memory",
+      JSON.stringify(conversation)
+    );
+
+  }catch(error){
+
+    console.error(
+      "Could not save Sally memory:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   MARKDOWN RENDERER
+   ========================================================= */
+
+function renderMarkdown(rawText){
+
+  if(rawText === null || rawText === undefined){
+    return "";
+  }
+
+  const text =
+    String(rawText);
+
+  try{
+
+    /*
+       Explicitly configure marked for GitHub-style
+       Markdown and line breaks.
+    */
+
+    marked.setOptions({
+      gfm:true,
+      breaks:true
+    });
+
+    const rendered =
+      marked.parse(text);
+
+
+    /*
+       DOMPurify removes dangerous HTML while keeping
+       normal Markdown-generated HTML.
+    */
+
+    const safeHTML =
+      DOMPurify.sanitize(
+        rendered,
+        {
+          USE_PROFILES:{
+            html:true
+          }
+        }
+      );
+
+
+    /*
+       Wrap tables so they can horizontally scroll
+       instead of destroying the mobile layout.
+    */
+
+    const container =
+      document.createElement("div");
+
+    container.innerHTML =
+      safeHTML;
+
+
+    container
+      .querySelectorAll("table")
+      .forEach(table => {
+
+        /*
+           Avoid wrapping a table twice.
+        */
+
+        if(
+          table.parentElement &&
+          table.parentElement.classList.contains(
+            "table-wrapper"
+          )
+        ){
+
+          return;
+
+        }
+
+        const wrapper =
+          document.createElement("div");
+
+        wrapper.className =
+          "table-wrapper";
+
+        table.parentNode.insertBefore(
+          wrapper,
+          table
+        );
+
+        wrapper.appendChild(table);
+
+      });
+
+
+    return container.innerHTML;
+
+  }catch(error){
+
+    console.error(
+      "Markdown rendering failed:",
+      error
+    );
+
+
+    /*
+       Safe fallback.
+       textContent is used so raw model output
+       cannot execute HTML.
+    */
+
+    const fallback =
+      document.createElement("div");
+
+    fallback.textContent =
+      text;
+
+    return fallback.innerHTML
+      .replace(/\n/g,"<br>");
+
+  }
+
+}
+
+
+/* =========================================================
+   ADD MESSAGE
+   ========================================================= */
+
+function addMessage(
+  content,
+  type,
+  isImage=false
+){
+
+  const msg =
+    document.createElement("div");
+
+  msg.className =
+    "message " + type;
+
+
+  if(isImage){
+
+    const img =
+      document.createElement("img");
+
+    img.src =
+      content;
+
+    img.className =
+      "chat-image";
+
+    img.alt =
+      "Sent image";
+
+    img.onclick =
+      () => openViewer(content);
+
+    msg.appendChild(img);
+
+
+    const time =
+      document.createElement("span");
+
+    time.className =
+      "time";
+
+    time.textContent =
+      getTime();
+
+    msg.appendChild(time);
+
+  }else{
+
+    /*
+       Sally messages are rendered as Markdown.
+       User messages remain plain text.
+    */
+
+    if(type === "bot"){
+
+      const markdown =
+        document.createElement("div");
+
+      markdown.className =
+        "markdown-content";
+
+      markdown.innerHTML =
+        renderMarkdown(content);
+
+      msg.appendChild(markdown);
+
+    }else{
+
+      const contentDiv =
+        document.createElement("div");
+
+      contentDiv.textContent =
+        content;
+
+      msg.appendChild(contentDiv);
+
+    }
+
+
+    const time =
+      document.createElement("span");
+
+    time.className =
+      "time";
+
+    time.textContent =
+      getTime();
+
+    msg.appendChild(time);
+
+  }
+
+
+  messagesDiv.appendChild(msg);
+
+  messagesDiv.scrollTop =
+    messagesDiv.scrollHeight;
+
+
+  return msg;
+
+}
+
+
+/* =========================================================
+   RESTORE MEMORY
+   ========================================================= */
+
+function restoreMessages(){
+
+  conversation.forEach(msg => {
+
+    /*
+       Never display the system prompt.
+    */
+
+    if(msg.role === "system"){
+      return;
+    }
+
+
+    if(msg.image){
+
+      addMessage(
+        msg.image,
+        "user",
+        true
+      );
+
+      return;
+
+    }
+
+
+    if(msg.role === "user"){
+
+      addMessage(
+        msg.content,
+        "user"
+      );
+
+    }
+
+
+    if(msg.role === "assistant"){
+
+      addMessage(
+        msg.content,
+        "bot"
+      );
+
+    }
+
+  });
+
+}
+
+
+restoreMessages();
+
+
+/* =========================================================
+   FIRST GREETING
+   ========================================================= */
+
+if(!savedConversation){
+
+  const greeting =
+    "Hey 💛 I'm Sally. How was your day?";
+
+
+  addMessage(
+    greeting,
+    "bot"
+  );
+
+
+  conversation.push({
+
+    role:"assistant",
+
+    content:greeting
+
+  });
+
+
+  saveMemory();
+
+}
+
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+function clearMemory(){
+
+  if(
+    !confirm(
+      "Delete all chats?"
+    )
+  ){
+
+    return;
+
+  }
+
+
+  localStorage.removeItem(
+    "sally_memory"
+  );
+
+
+  location.reload();
+
+}
+
+
+/* =========================================================
+   IMAGE PREVIEW
+   ========================================================= */
+
+function showImagePreview(
+  dataURL,
+  label
+){
+
+  pendingImageURL =
+    dataURL;
+
+  pendingImageBase64 =
+    dataURL.split(",")[1];
+
+  pendingImageType =
+    dataURL.substring(
+      dataURL.indexOf(":") + 1,
+      dataURL.indexOf(";")
+    );
+
+
+  previewThumb.src =
+    dataURL;
+
+  previewLabel.textContent =
+    label;
+
+
+  previewStrip.style.display =
+    "flex";
+
+  attachBadge.style.display =
+    "block";
+
+}
+
+
+/* =========================================================
+   IMAGE ATTACH
+   ========================================================= */
+
+imageInput.addEventListener(
+  "change",
+  function(){
+
+    const file =
+      this.files[0];
+
+    if(!file){
+      return;
+    }
+
+
+    if(!file.type.startsWith("image/")){
+
+      alert(
+        "Please choose an image."
+      );
+
+      return;
+
+    }
+
+
+    const reader =
+      new FileReader();
+
+
+    reader.onload =
+      e => {
+
+        showImagePreview(
+          e.target.result,
+          file.name +
+          " — ask Sally about it"
+        );
+
+      };
+
+
+    reader.readAsDataURL(file);
+
+  }
+);
+
+
+/* =========================================================
+   REMOVE IMAGE
+   ========================================================= */
+
+function removeImage(){
+
+  pendingImageBase64 =
+    null;
+
+  pendingImageType =
+    null;
+
+  pendingImageURL =
+    null;
+
+
+  imageInput.value =
+    "";
+
+
+  previewThumb.src =
+    "";
+
+  previewStrip.style.display =
+    "none";
+
+  attachBadge.style.display =
+    "none";
+
+}
+
+
+/* =========================================================
+   PASTE IMAGE
+   ========================================================= */
+
+document.addEventListener(
+  "paste",
+  function(e){
+
+    const items =
+      e.clipboardData?.items;
+
+    if(!items){
+      return;
+    }
+
+
+    for(const item of items){
+
+      if(
+        item.type.startsWith("image/")
+      ){
+
+        e.preventDefault();
+
+
+        const file =
+          item.getAsFile();
+
+        if(!file){
+          return;
+        }
+
+
+        const reader =
+          new FileReader();
+
+
+        reader.onload =
+          ev => {
+
+            showImagePreview(
+              ev.target.result,
+              "Pasted image — ask Sally about it"
+            );
+
+          };
+
+
+        reader.readAsDataURL(file);
+
+
+        break;
+
+      }
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   BUILD API MESSAGES
+   ========================================================= */
+
+function buildAPIMessages(){
+
+  return conversation
+    .filter(msg => {
+
+      /*
+         Do not send image preview-only metadata
+         as part of the model conversation.
+      */
+
+      return (
+        msg.role === "system" ||
+        msg.role === "assistant" ||
+        (
+          msg.role === "user" &&
+          typeof msg.content === "string"
+        )
+      );
+
+    })
+    .map(msg => {
+
+      return {
+        role:msg.role,
+        content:msg.content
+      };
+
+    });
+
+}
+
+
+/* =========================================================
+   SEND MESSAGE
+   ========================================================= */
+
+async function sendMessage(){
+
+  if(sendBtn.disabled){
+    return;
+  }
+
+
+  const text =
+    userInput.value.trim();
+
+
+  if(
+    !text &&
+    !pendingImageBase64
+  ){
+
+    return;
+
+  }
+
+
+  /*
+     Capture image BEFORE clearing preview.
+  */
+
+  const capturedImageBase64 =
+    pendingImageBase64;
+
+  const capturedImageType =
+    pendingImageType;
+
+  const capturedImageURL =
+    pendingImageURL;
+
+
+  /*
+     Add user image to the UI and memory.
+  */
+
+  if(capturedImageURL){
+
+    addMessage(
+      capturedImageURL,
+      "user",
+      true
+    );
+
+
+    conversation.push({
+
+      role:"user",
+
+      content:
+        text || "[Image sent]",
+
+      image:
+        capturedImageURL
+
+    });
+
+  }else if(text){
+
+    conversation.push({
+
+      role:"user",
+
+      content:text
+
+    });
+
+  }
+
+
+  /*
+     Add the user's text to the UI.
+     If an image was attached, the image and
+     text appear as one user turn.
+  */
+
+  if(text){
+
+    addMessage(
+      text,
+      "user"
+    );
+
+  }
+
+
+  /*
+     Build the exact message sent to OpenRouter.
+
+     For images, OpenRouter-compatible multimodal
+     content is used.
+  */
+
+  let apiMessages =
+    buildAPIMessages();
+
+
+  if(
+    capturedImageBase64 &&
+    capturedImageType
+  ){
+
+    /*
+       Replace the last user message with a
+       multimodal message containing both text
+       and the image.
+
+       If no text was entered, use a simple
+       image-analysis instruction.
+    */
+
+    const lastUserIndex =
+      apiMessages.length - 1;
+
+    if(lastUserIndex >= 0){
+
+      const lastUser =
+        apiMessages[lastUserIndex];
+
+
+      if(lastUser.role === "user"){
+
+        apiMessages[lastUserIndex] = {
+
+          role:"user",
+
+          content:[
+            {
+              type:"text",
+
+              text:
+                text ||
+                "Please look at this image and tell me what you see."
+            },
+
+            {
+              type:"image_url",
+
+              image_url:{
+                url:
+                  `data:${capturedImageType};base64,${capturedImageBase64}`
+              }
+
+            }
+
+          ]
+
+        };
+
+      }
+
+    }
+
+  }
+
+
+  /*
+     Clear input and attachment.
+  */
+
+  userInput.value =
+    "";
+
+  userInput.style.height =
+    "45px";
+
+
+  removeImage();
+
+
+  /*
+     Typing indicator.
+  */
+
+  statusText.textContent =
+    "typing...";
+
+
+  sendBtn.disabled =
+    true;
+
+
+  const thinking =
+    addMessage(
+      "•••",
+      "bot"
+    );
+
+  thinking.classList.add(
+    "typing"
+  );
+
+
+  try{
+
+    const response =
+      await fetch(
+        API_URL,
+        {
+          method:"POST",
+
+          headers:{
+            "Content-Type":
+              "application/json"
+          },
+
+          body:JSON.stringify({
+
+            model:MODEL,
+
+            messages:apiMessages,
+
+            temperature:0.7,
+
+            max_tokens:1200
+
+          })
+
+        }
+      );
+
+
+    let data;
+
+    try{
+
+      data =
+        await response.json();
+
+    }catch(jsonError){
+
+      throw new Error(
+        "The worker returned an invalid response."
+      );
+
+    }
+
+
+    /*
+       Remove typing indicator.
+    */
+
+    thinking.remove();
+
+
+    if(!response.ok){
+
+      const errorMessage =
+        data?.error?.message ||
+        data?.error ||
+        data?.message ||
+        `Request failed (${response.status})`;
+
+      throw new Error(
+        String(errorMessage)
+      );
+
+    }
+
+
+    const assistantMessage =
+      data?.choices?.[0]?.message?.content;
+
+
+    if(
+      !assistantMessage
+    ){
+
+      console.error(
+        "Unexpected API response:",
+        data
+      );
+
+      throw new Error(
+        "Sally received an empty response from the AI."
+      );
+
+    }
+
+
+    /*
+       Display Sally's Markdown-formatted response.
+    */
+
+    addMessage(
+      assistantMessage,
+      "bot"
+    );
+
+
+    /*
+       Save Sally's actual response.
+    */
+
+    conversation.push({
+
+      role:"assistant",
+
+      content:assistantMessage
+
+    });
+
+
+    saveMemory();
+
+
+  }catch(error){
+
+    console.error(
+      "Sally request failed:",
+      error
+    );
+
+
+    /*
+       Remove typing indicator if it still exists.
+    */
+
+    if(
+      thinking &&
+      thinking.parentNode
+    ){
+
+      thinking.remove();
+
+    }
+
+
+    const errorText =
+      `Sorry 💛 I couldn't reach the AI right now.\n\n**Error:** ${error.message}`;
+
+
+    addMessage(
+      errorText,
+      "bot"
+    );
+
+  }finally{
+
+    statusText.textContent =
+      "online";
+
+    sendBtn.disabled =
+      false;
+
+    userInput.focus();
+
+  }
+
+}
+
+
+/* =========================================================
+   TEXTAREA AUTO RESIZE
+   ========================================================= */
+
+function autoResize(){
+
+  userInput.style.height =
+    "45px";
+
+  userInput.style.height =
+    Math.min(
+      userInput.scrollHeight,
+      120
+    ) + "px";
+
+}
+
+
+userInput.addEventListener(
+  "input",
+  autoResize
+);
+
+
+/* =========================================================
+   ENTER TO SEND
+   ========================================================= */
+
+userInput.addEventListener(
+  "keydown",
+  function(event){
+
+    /*
+       Enter sends.
+       Shift + Enter creates a new line.
+    */
+
+    if(
+      event.key === "Enter" &&
+      !event.shiftKey
+    ){
+
+      event.preventDefault();
+
+      sendMessage();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   IMAGE VIEWER
+   ========================================================= */
+
+function openViewer(src){
+
+  const viewer =
+    document.getElementById(
+      "imgViewer"
+    );
+
+  const viewerImg =
+    document.getElementById(
+      "imgViewerImg"
+    );
+
+
+  viewerImg.src =
+    src;
+
+  viewer.classList.add(
+    "active"
+  );
+
+}
+
+
+function closeViewer(){
+
+  const viewer =
+    document.getElementById(
+      "imgViewer"
+    );
+
+  const viewerImg =
+    document.getElementById(
+      "imgViewerImg"
+    );
+
+
+  viewer.classList.remove(
+    "active"
+  );
+
+  viewerImg.src =
+    "";
+
+}
+
+
+document
+  .getElementById("imgViewer")
+  .addEventListener(
+    "click",
+    function(event){
+
+      if(
+        event.target === this
+      ){
+
+        closeViewer();
+
+      }
+
+    }
+  );
+
+
+/* =========================================================
+   INITIAL FOCUS
+   ========================================================= */
+
+userInput.focus();
+
+</script>
+
+</body>
+</html>
