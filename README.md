@@ -89,13 +89,6 @@ and selecting a trusted contact.
     └── README.md
 
 ------------------------------------------------------------------------
-
-# 📷 Project Gallery
-
-Project screenshots and demonstrations will be added in future updates.
-
-------------------------------------------------------------------------
-
 # 🔄 Project Evolution
 
 This project began as an idea named **Guardian Angel** before evolving
